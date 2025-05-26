@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Genre {
+  Male  
+  Female
+}
+
+enum TypeCompte {
+  Bancaire
+  Postal
+}
+
+enum NomGrade {
+  MCA
+  MCB
+  PROF
+}
+
+enum TypeSession {
+  COURS
+  TD
+  TP
+}
+
+enum Promotion {
+  CP_1
+  CP_2
+  CS_1
+  CS_2
+  CS_3
+}
+
+enum Jour {
+  Dimanche
+  Lundi
+  Mardi
+  Mercredi
+  Jeudi
+  Vendredi
+  Samedi
+}
+
+enum Matiere {
+  Resaux
+  Algo
+  Systeme
+}
+
+model Admin {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  motDePasse String
+  nomComplet String
+  telephone  String?
+}
+
+model Enseignant {
+  id                   Int                 @id @default(autoincrement())
+  prenom               String
+  nom                  String
+  email           String              @unique
+  dateNaissance        DateTime
+  genre                Genre
+  numeroTelephone     String
+  gradeEnseignants      EnseignantGrade[]
+  vacataire            Boolean
+  charge Int 
+  matiere Matiere 
+  typeCompte           TypeCompte
+  numeroCompte         String
+
+  droitHeuresSup       Boolean?
+  periodesTravail      PeriodeTravailEnseignant[]
+  imageUrl             String?             
+  imagePublicId        String?
+  creeLe               DateTime            @default(now())
+  modifieLe            DateTime            @updatedAt
+  Absence              Absence[]
+  sessions             Session[]           @relation("TeacherSessions")
+  suppHours SuppHours[]
+}
+
+model Grade {
+  id    Int       @id @default(autoincrement())
+  nom   NomGrade  @unique
+  rangEnseignants EnseignantGrade[]
+}
+
+model EnseignantGrade {
+  id           Int        @id @default(autoincrement())
+  enseignant   Enseignant @relation(fields: [enseignantId], references: [id])
+  enseignantId Int
+  grade         Grade       @relation(fields: [gradeId], references: [id])
+  gradeId       Int
+  dateDebut    DateTime
+  dateFin      DateTime?
+}
+
+model PeriodeTravail {
+  id                 Int                 @id @default(autoincrement())
+  dateDebut          DateTime
+  dateFin            DateTime
+  periodesTravailEnseignant PeriodeTravailEnseignant[]
+}
+
+model PeriodeTravailEnseignant {
+  id            Int              @id @default(autoincrement())
+  enseignant    Enseignant       @relation(fields: [enseignantId], references: [id])
+  enseignantId  Int
+  periodeTravail PeriodeTravail  @relation(fields: [periodeTravailId], references: [id])
+  periodeTravailId Int
+}
+
+model Session {
+  id              Int                 @id @default(autoincrement())
+  semestre        String
+  promotion       Promotion
+  groupe          String
+  salle           String
+  jour            Jour
+  heureDebut      Int
+  minuteDebut     Int
+  heureFin        Int
+  minuteFin       Int
+  module          String
+  typeSession     TypeSession
+  absences        Absence[]
+  enseignants     Enseignant[]       @relation("TeacherSessions")
+  suppHourLinks   SuppHourSession[]
+}
+
+
+model Absence {
+  id           Int      @id @default(autoincrement())
+  dateDebut    DateTime
+  dateFin      DateTime
+  heureDebut   Int
+  minuteDebut  Int
+  heureFin     Int
+  minuteFin    Int
+  justifiee    Boolean  @default(false)
+
+  enseignant   Enseignant? @relation(fields: [enseignantId], references: [id])
+  enseignantId Int?
+
+  session      Session? @relation(fields: [sessionId], references: [id])
+  sessionId    Int?
+}
+
+model JourFerie {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  description String
+}
+
+model SuppHours {
+  id            Int                @id @default(autoincrement())
+  enseignant    Enseignant         @relation(fields: [enseignantId], references: [id])
+  enseignantId  Int                @unique
+  sessionsLink  SuppHourSession[]
+  heuresTotal   Float
+}
+
+model SuppHourSession {
+  id           Int        @id @default(autoincrement())
+  suppHours    SuppHours  @relation(fields: [suppHoursId], references: [id])
+  suppHoursId  Int
+
+  session      Session    @relation(fields: [sessionId], references: [id])
+  sessionId    Int
+
+  partially    Boolean    @default(false)
+  SuppHeureDebut      Int
+  SuppMinuteDebut     Int
+  duration     Float 
+
+  @@unique([suppHoursId, sessionId])
+}

@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "f4a3a37d-1f81-4594-8350-dae5aece40b4",
+		"name": "Teacher endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38596207"
+	},
+	"item": [
+		{
+			"name": "http://localhost:5000/teachers",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJlbWFpbCI6ImFkbWluIiwiaWF0IjoxNzQ4MTAwNjU0LCJleHAiOjE3NDg3MDU0NTR9.2DvFFkWpNYIRGYbooMQYu24BoPEHzoIIwPl_gMNRr7s",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"prenom\": \"Bilal\",\n  \"nom\": \"Mamoun\",\n  \"email\": \"bello@example.com\",\n  \"dateNaissance\": \"1995-04-23\",\n  \"genre\": \"Male\",\n  \"numeroTelephone\": \"0555123456\",\n  \"vacataire\": false,\n  \"charge\": 192,\n  \"matiere\": \"Algo\",\n  \"typeCompte\": \"Bancaire\",\n  \"numeroCompte\": \"1234567890\",\n  \"droitHeuresSup\": true,\n  \"gradeId\": 1,\n  \"periodeTravailId\":2\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/teachers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"teachers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/teachers/1",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJlbWFpbCI6ImFkbWluIiwiaWF0IjoxNzQ4MTAwNjU0LCJleHAiOjE3NDg3MDU0NTR9.2DvFFkWpNYIRGYbooMQYu24BoPEHzoIIwPl_gMNRr7s",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"prenom\": \"Bilal\",\n  \"nom\": \"Mamoun\",\n  \"email\": \"belllo@example.com\",\n  \"dateNaissance\": \"1995-04-23\",\n  \"genre\": \"Male\",\n  \"numeroTelephone\": \"0555123456\",\n  \"vacataire\": false,\n  \"charge\": 192,\n  \"matiere\": \"Algo\",\n  \"typeCompte\": \"Bancaire\",\n  \"numeroCompte\": \"1234567890\",\n  \"droitHeuresSup\": true,\n  \"gradeId\": 2,\n  \"periodeTravailId\":2\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/teachers/14",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"teachers",
+						"14"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/teachers/1",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJlbWFpbCI6ImFkbWluIiwiaWF0IjoxNzQ4MTAwNjU0LCJleHAiOjE3NDg3MDU0NTR9.2DvFFkWpNYIRGYbooMQYu24BoPEHzoIIwPl_gMNRr7s",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/teachers/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"teachers",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/teachers",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJlbWFpbCI6ImFkbWluIiwiaWF0IjoxNzQ4MTAwNjU0LCJleHAiOjE3NDg3MDU0NTR9.2DvFFkWpNYIRGYbooMQYu24BoPEHzoIIwPl_gMNRr7s",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/teachers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"teachers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/teachers/byGrade",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJlbWFpbCI6ImFkbWluIiwiaWF0IjoxNzQ4MTAwNjU0LCJleHAiOjE3NDg3MDU0NTR9.2DvFFkWpNYIRGYbooMQYu24BoPEHzoIIwPl_gMNRr7s",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/teachers/byGrade",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"teachers",
+						"byGrade"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:5000/teachers/byPeriod",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJlbWFpbCI6ImFkbWluIiwiaWF0IjoxNzQ4MTAwNjU0LCJleHAiOjE3NDg3MDU0NTR9.2DvFFkWpNYIRGYbooMQYu24BoPEHzoIIwPl_gMNRr7s",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/teachers/byPeriod",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"teachers",
+						"byPeriod"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

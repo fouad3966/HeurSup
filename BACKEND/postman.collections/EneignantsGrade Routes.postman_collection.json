@@ -1,0 +1,44 @@
+{
+	"info": {
+		"_postman_id": "d9dc4d5d-be90-4c08-b98d-b8895f11f556",
+		"name": "EneignantsGrade Routes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38596207"
+	},
+	"item": [
+		{
+			"name": "http://localhost:5000/enseignant-grades",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJlbWFpbCI6ImFkbWluIiwiaWF0IjoxNzQ4MTAwNjU0LCJleHAiOjE3NDg3MDU0NTR9.2DvFFkWpNYIRGYbooMQYu24BoPEHzoIIwPl_gMNRr7s",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"enseignantId\": 4,\n  \"gradeId\": 1,\n  \"dateDebut\": \"2025-01-01T00:00:00.000Z\",\n  \"dateFin\": \"2025-12-31T00:00:00.000Z\"  // Optional\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/enseignant-grades",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"enseignant-grades"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

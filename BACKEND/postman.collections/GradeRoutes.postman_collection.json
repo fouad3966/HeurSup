@@ -1,0 +1,49 @@
+{
+	"info": {
+		"_postman_id": "13273a9e-0c45-49ad-9d9a-093e909a2fec",
+		"name": "GradeRoutes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38596207"
+	},
+	"item": [
+		{
+			"name": "http://localhost:5000/grades",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": " Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbklkIjoxLCJlbWFpbCI6ImFkbWluIiwiaWF0IjoxNzQ4MTAwNjU0LCJleHAiOjE3NDg3MDU0NTR9.2DvFFkWpNYIRGYbooMQYu24BoPEHzoIIwPl_gMNRr7s",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nom\":\"MCB\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/grades",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"grades"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

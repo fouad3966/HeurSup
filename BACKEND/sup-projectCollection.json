@@ -1,0 +1,382 @@
+{
+  "info": {
+    "_postman_id": "11111111-2222-3333-4444-555555555555",
+    "name": "Sup Project Full API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "YOUR_JWT_TOKEN" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Admin Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json", "type": "text" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"motDePasse\": \"12345678\",\n  \"nomComplet\": \"Admin User\",\n  \"telephone\": \"0600000000\"\n}" },
+            "url": { "raw": "{{baseUrl}}/admin/register", "host": ["{{baseUrl}}"], "path": ["admin", "register"] }
+          }
+        },
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json", "type": "text" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@example.com\",\n  \"motDePasse\": \"12345678\"\n}" },
+            "url": { "raw": "{{baseUrl}}/admin/login", "host": ["{{baseUrl}}"], "path": ["admin", "login"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Teachers",
+      "item": [
+        {
+          "name": "Create Teacher",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prenom\": \"Ali\",\n  \"nom\": \"Ben Ahmed\",\n  \"email\": \"ali@example.com\",\n  \"dateNaissance\": \"1980-01-01T00:00:00.000Z\",\n  \"genre\": \"Masculin\",\n  \"numeroTelephone\": \"0601010101\",\n  \"adresse\": \"Algiers\",\n  \"numeroCompte\": \"123456\",\n  \"typeCompte\": \"BANQUE\",\n  \"droitHeuresSup\": true,\n  \"vacataire\": false\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/teachers/", "host": ["{{baseUrl}}"], "path": ["teachers", ""] }
+          }
+        },
+        {
+          "name": "Get All Teachers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/teachers/", "host": ["{{baseUrl}}"], "path": ["teachers", ""] }
+          }
+        },
+        {
+          "name": "Update Teacher",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"prenom\": \"Ali\",\n  \"nom\": \"Ben Ahmed Updated\",\n  \"genre\": \"Masculin\"\n}" },
+            "url": { "raw": "{{baseUrl}}/teachers/1", "host": ["{{baseUrl}}"], "path": ["teachers", "1"] }
+          }
+        },
+        {
+          "name": "Delete Teacher",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/teachers/1", "host": ["{{baseUrl}}"], "path": ["teachers", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Grades",
+      "item": [
+        {
+          "name": "Create Grade",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"nom\": \"MCA\" }" },
+            "url": { "raw": "{{baseUrl}}/grades", "host": ["{{baseUrl}}"], "path": ["grades"] }
+          }
+        },
+        {
+          "name": "Update Grade",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"nom\": \"MCB\" }" },
+            "url": { "raw": "{{baseUrl}}/grades/1", "host": ["{{baseUrl}}"], "path": ["grades", "1"] }
+          }
+        },
+        {
+          "name": "Delete Grade",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/grades/1", "host": ["{{baseUrl}}"], "path": ["grades", "1"] }
+          }
+        },
+        {
+          "name": "Get All Grades",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/grades", "host": ["{{baseUrl}}"], "path": ["grades"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enseignant Grades",
+      "item": [
+        {
+          "name": "Add Grade to Teacher",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enseignantId\": 1,\n  \"gradeId\": 1,\n  \"dateDebut\": \"2024-06-01T00:00:00.000Z\",\n  \"dateFin\": \"2024-06-30T00:00:00.000Z\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/enseignant-grades", "host": ["{{baseUrl}}"], "path": ["enseignant-grades"] }
+          }
+        },
+        {
+          "name": "Get All Enseignant Grades",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/enseignant-grades", "host": ["{{baseUrl}}"], "path": ["enseignant-grades"] }
+          }
+        },
+        {
+          "name": "Update Enseignant Grade",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"enseignantId\": 1,\n  \"gradeId\": 2,\n  \"dateDebut\": \"2024-07-01T00:00:00.000Z\",\n  \"dateFin\": null\n}" },
+            "url": { "raw": "{{baseUrl}}/enseignant-grades/1", "host": ["{{baseUrl}}"], "path": ["enseignant-grades", "1"] }
+          }
+        },
+        {
+          "name": "Delete Enseignant Grade",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/enseignant-grades/1", "host": ["{{baseUrl}}"], "path": ["enseignant-grades", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sessions",
+      "item": [
+        {
+          "name": "Create Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"semestre\": \"S2\",\n  \"promotion\": \"CS_2\",\n  \"groupe\": \"B\",\n  \"salle\": \"201\",\n  \"jour\": \"Dimanche\",\n  \"heureDebut\": 8,\n  \"minuteDebut\": 0,\n  \"heureFin\": 14,\n  \"minuteFin\": 30,\n  \"module\": \"Analyse\",\n  \"typeSession\": \"COURS\",\n  \"teacherIds\": [1]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/sessions/", "host": ["{{baseUrl}}"], "path": ["sessions", ""] }
+          }
+        },
+        {
+          "name": "Get All Sessions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/sessions/", "host": ["{{baseUrl}}"], "path": ["sessions", ""] }
+          }
+        },
+        {
+          "name": "Update Session",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"semestre\": \"S2\",\n  \"promotion\": \"CS_2\",\n  \"groupe\": \"B\",\n  \"salle\": \"201\",\n  \"jour\": \"Dimanche\",\n  \"heureDebut\": 8,\n  \"minuteDebut\": 0,\n  \"heureFin\": 14,\n  \"minuteFin\": 30,\n  \"module\": \"Analyse\",\n  \"typeSession\": \"TD\",\n  \"teacherIds\": [1]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/sessions/1", "host": ["{{baseUrl}}"], "path": ["sessions", "1"] }
+          }
+        },
+        {
+          "name": "Delete Session",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/sessions/1", "host": ["{{baseUrl}}"], "path": ["sessions", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Absences",
+      "item": [
+        {
+          "name": "Create Absence",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dateDebut\": \"2024-06-01T00:00:00.000Z\",\n  \"dateFin\": \"2024-06-01T00:00:00.000Z\",\n  \"heureDebut\": 8,\n  \"minuteDebut\": 0,\n  \"heureFin\": 10,\n  \"minuteFin\": 0,\n  \"justifiee\": true,\n  \"enseignantId\": 1,\n  \"sessionId\": 1\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/absences", "host": ["{{baseUrl}}"], "path": ["absences"] }
+          }
+        },
+        {
+          "name": "Get All Absences",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/absences", "host": ["{{baseUrl}}"], "path": ["absences"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Work Periods",
+      "item": [
+        {
+          "name": "Create Work Period",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"dateDebut\": \"2024-06-01T00:00:00.000Z\", \"dateFin\": \"2024-06-30T00:00:00.000Z\" }"
+            },
+            "url": { "raw": "{{baseUrl}}/periodes-travail", "host": ["{{baseUrl}}"], "path": ["periodes-travail"] }
+          }
+        },
+        {
+          "name": "Update Work Period",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"dateDebut\": \"2024-07-01T00:00:00.000Z\", \"dateFin\": \"2024-07-31T00:00:00.000Z\" }"
+            },
+            "url": { "raw": "{{baseUrl}}/periodes-travail/1", "host": ["{{baseUrl}}"], "path": ["periodes-travail", "1"] }
+          }
+        },
+        {
+          "name": "Delete Work Period",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/periodes-travail/1", "host": ["{{baseUrl}}"], "path": ["periodes-travail", "1"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Teacher-Work Period Link",
+      "item": [
+        {
+          "name": "Link Teacher to Work Period",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"enseignantId\": 1, \"periodeTravailId\": 1 }" },
+            "url": { "raw": "{{baseUrl}}/periode-travail-enseignants", "host": ["{{baseUrl}}"], "path": ["periode-travail-enseignants"] }
+          }
+        },
+        {
+          "name": "Get All Teacher-Work Period Links",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/periode-travail-enseignants", "host": ["{{baseUrl}}"], "path": ["periode-travail-enseignants"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Holidays",
+      "item": [
+        {
+          "name": "Create Holiday",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{ \"date\": \"2024-06-15T00:00:00.000Z\", \"description\": \"Aïd\" }" },
+            "url": { "raw": "{{baseUrl}}/jours-feries", "host": ["{{baseUrl}}"], "path": ["jours-feries"] }
+          }
+        },
+        {
+          "name": "Get All Holidays",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/jours-feries", "host": ["{{baseUrl}}"], "path": ["jours-feries"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Supplementary Hours",
+      "item": [
+        {
+          "name": "Calculate Supplementary Hour Sessions for Teacher",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/calculate/1", "host": ["{{baseUrl}}"], "path": ["calculate", "1"] }
+          }
+        },
+        {
+          "name": "Get Teacher Supplementary Hours",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}", "type": "text" }],
+            "url": { "raw": "{{baseUrl}}/suppHours/1", "host": ["{{baseUrl}}"], "path": ["suppHours", "1"] }
+          }
+        },
+        {
+          "name": "Get Teacher Supplementary Hours in Period",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"startDate\": \"2024-06-01\",\n  \"endDate\": \"2024-06-30\"\n}" },
+            "url": { "raw": "{{baseUrl}}/suppHoursCalculate/1", "host": ["{{baseUrl}}"], "path": ["suppHoursCalculate", "1"] }
+          }
+        }
+      ]
+    }
+  ]
+}

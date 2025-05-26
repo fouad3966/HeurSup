@@ -1,0 +1,302 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+/* Main Container */
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background-color: #f5f7fa;
+}
+
+/* Content Wrapper */
+.profile-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Profile Header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+}
+
+.profile-identity {
+  flex: 1;
+}
+
+.profile-identity h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #2d3748;
+}
+
+.profile-email {
+  font-size: 0.9rem;
+  color: #4299e1;
+  text-decoration: none;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.profile-email:hover {
+  text-decoration: underline;
+}
+
+.edit-button {
+  padding: 0.6rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+  background-color: #54a0ff;
+}
+
+.edit-icon {
+  font-size: 1rem;
+}
+
+/* Information Container */
+.information-container {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.5rem 0 1rem 0;
+  color: #000000;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.section-title:first-child {
+  margin-top: 0;
+}
+
+/* Info Grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Info Group */
+.info-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-label {
+  font-size: 0.875rem;
+  color: #000000;
+  font-weight: 500;
+}
+
+/* Editable Field Containers */
+.info-value-container {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.25rem;
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.info-value {
+  font-size: 1rem;
+  color: #8c929d;
+  font-weight: 500;
+  margin-left: 5px;
+}
+.info-value-mail {
+  font-size: 1rem;
+  color: #000000;
+  font-weight: 550;
+}
+.info-value-phone {
+  font-size: 1rem;
+  color: #000000;
+  font-weight: 550;
+}
+.info-subsection {
+  margin-bottom: 1.5rem;
+}
+
+.info-subheader {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #4a5568;
+  text-align: left;
+}
+
+.info-value-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.info-icon {
+  color: #0066ff;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-value-with-time .info-value {
+  color: #4299e1;
+  text-decoration: none;
+}
+
+.info-time {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .profile-identity {
+    width: 100%;
+  }
+
+  .edit-button {
+    align-self: flex-end;
+  }
+
+  .information-container {
+    padding: 1.5rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Add these to your existing profile.css */
+.editable-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: "Poppins", sans-serif;
+  background-color: white;
+}
+
+.editable-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.name-input {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0.5rem;
+}
+
+.email-input {
+  font-size: 0.9rem;
+  color: #4299e1;
+}
+
+.editable-select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: "Poppins", sans-serif;
+  background-color: white;
+}
+
+.editable-select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Adjust the info value container for edit mode */
+.info-value-container.editing {
+  padding: 0;
+  background-color: white;
+}
+.back-button {
+  margin: 10px 0;
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+.profile-avatar-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+.file-upload-container {
+  width: 120px;
+  height: 120px;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+.file-upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.upload-icon {
+  font-size: 24px;
+  color: #666;
+}
+.file-input-hidden {
+  display: none;
+}
