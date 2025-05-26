@@ -91,19 +91,46 @@ async function updateSession(req, res) {
         res.status(500).json({ error: `Failed to update session: ${error.message}` });
     }
 }
-
 async function deleteSession(req, res) {
     try {
         const { id } = req.params;
-        const deletedSession = await prisma.session.delete({
-            where: { id: parseInt(id) },
-        });
+        const sessionId = parseInt(id);
+
+        const [deletedSession] = await prisma.$transaction([
+            // 1. Delete related SuppHourSession entries
+            prisma.suppHourSession.deleteMany({
+                where: { sessionId },
+            }),
+
+            // 2. Nullify related Absences (you can delete them if preferred)
+            prisma.absence.updateMany({
+                where: { sessionId },
+                data: { sessionId: null },
+            }),
+
+            // 3. Disconnect all enseignants from this session
+            prisma.session.update({
+                where: { id: sessionId },
+                data: {
+                    enseignants: {
+                        set: [], // removes all links in the join table
+                    },
+                },
+            }),
+
+            // 4. Finally delete the session itself
+            prisma.session.delete({
+                where: { id: sessionId },
+            }),
+        ]);
+
         res.status(200).json({ message: 'Session deleted successfully', deletedSession });
     } catch (error) {
         console.error('Error deleting session:', error);
         res.status(500).json({ error: `Failed to delete session: ${error.message}` });
     }
 }
+
 async function getSessionByTeacherID(req, res) {
     try {
         const { teacherId } = req.params;
