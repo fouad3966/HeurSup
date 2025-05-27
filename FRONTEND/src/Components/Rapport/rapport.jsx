@@ -355,13 +355,17 @@ const Rapport = () => {
             const absencesResponse = await api.get(
               `/teacher/${selectedProfessor}/absences/grouped`
             );
+          
             console.log("Absences by period response:", absencesResponse.data);
+          
             if (absencesResponse.data.success) {
               const periodAbsences = absencesResponse.data.data.periods || [];
+          
               const periodsWithAbsences = updatedPeriods.map((period) => {
                 const absenceData = periodAbsences.find(
                   (pa) => pa.periodId === period.id
                 );
+          
                 return {
                   ...period,
                   totalAbsences: absenceData?.totalAbsences || 0,
@@ -369,6 +373,7 @@ const Rapport = () => {
                   unjustifiedAbsences: absenceData?.unjustifiedCount || 0,
                 };
               });
+          
               setPeriods(periodsWithAbsences);
             } else {
               console.warn(
@@ -383,6 +388,7 @@ const Rapport = () => {
             );
             setPeriods(updatedPeriods);
           }
+          
         } catch (err) {
           console.error("Error calculating period data:", err);
           setError("Failed to calculate period data for the selected teacher.");

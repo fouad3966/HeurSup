@@ -160,14 +160,7 @@ const getAbsencesByTeacherGroupedByPeriod = async (req, res) => {
     // Check if teacher exists
     const teacher = await prisma.enseignant.findUnique({
       where: {
-        id: teacherIdInt, // Corrected to use teacherIdInt instead of Int
-      },
-      include: {
-        periodesTravail: {
-          include: {
-            periodeTravail: true,
-          },
-        },
+        id: teacherIdInt,
       },
     });
 
@@ -183,14 +176,33 @@ const getAbsencesByTeacherGroupedByPeriod = async (req, res) => {
       where: { enseignantId: teacherIdInt },
     });
 
-    // Group absences by period
-    const periodsWithCounts = teacher.periodesTravail.map((pt) => {
-      const period = pt.periodeTravail;
+    // Define the 3 custom periods with numeric IDs
+    const customPeriods = [
+      {
+        id: 1,
+        name: "Period 1: 20 Sep - 31 Dec 2024",
+        start: new Date("2024-09-20"),
+        end: new Date("2024-12-31"),
+      },
+      {
+        id: 2,
+        name: "Period 2: 01 Jan - 20 Jan 2025",
+        start: new Date("2025-01-01"),
+        end: new Date("2025-01-20"),
+      },
+      {
+        id: 3,
+        name: "Period 3: 21 Jan - 01 Jun 2025",
+        start: new Date("2025-01-21"),
+        end: new Date("2025-06-01"),
+      },
+    ];
+
+    // Group absences by custom periods
+    const periodsWithCounts = customPeriods.map((period) => {
       const periodAbsences = absences.filter((absence) => {
-        const absenceStart = new Date(absence.dateDebut).getTime();
-        const periodStart = new Date(period.dateDebut).getTime();
-        const periodEnd = new Date(period.dateFin).getTime();
-        return absenceStart >= periodStart && absenceStart <= periodEnd;
+        const absenceDate = new Date(absence.dateDebut).getTime();
+        return absenceDate >= period.start.getTime() && absenceDate <= period.end.getTime();
       });
 
       const totalAbsences = periodAbsences.length;
@@ -199,8 +211,9 @@ const getAbsencesByTeacherGroupedByPeriod = async (req, res) => {
 
       return {
         periodId: period.id,
-        periodStart: period.dateDebut.toISOString().split('T')[0],
-        periodEnd: period.dateFin.toISOString().split('T')[0],
+        periodName: period.name,
+        periodStart: period.start.toISOString().split('T')[0],
+        periodEnd: period.end.toISOString().split('T')[0],
         totalAbsences,
         justifiedCount,
         unjustifiedCount,
@@ -215,7 +228,7 @@ const getAbsencesByTeacherGroupedByPeriod = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error grouping absences by period:", error);
+    console.error("Error grouping absences by custom periods:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
