@@ -30,119 +30,154 @@ const getSupplementaryHourSessions = async (req, res) => {
       return res.status(404).json({ success: false, message: "No sessions found for this teacher" });
     }
 
-    const sessionsWithDetails = sessions.map((session) => {
-      const startTime = session.heureDebut + session.minuteDebut / 60;
-      const endTime = session.heureFin + session.minuteFin / 60;
-      const duration = endTime - startTime;
+    let suppSessions = [];
+    let regularSessions = [];
+    let totalSuppHours = 0;
+    let totalRegularTDEquivalent = 0;
 
-      const coefficient =
-        session.typeSession === "COURS"
-          ? 1.5
-          : session.typeSession === "TD"
+    // Check if teacher is vacataire
+    if (teacher.vacataire) {
+      // All sessions are supplementary for vacataire
+      suppSessions = sessions.map((session) => {
+        const startTime = session.heureDebut + session.minuteDebut / 60;
+        const endTime = session.heureFin + session.minuteFin / 60;
+        const duration = endTime - startTime;
+        const coefficient =
+          session.typeSession === "COURS"
+            ? 1.5
+            : session.typeSession === "TD"
             ? 1
             : session.typeSession === "TP"
-              ? 0.75
-              : 1;
+            ? 0.75
+            : 1;
 
-      const tdEquivalent = duration * coefficient;
+        const tdEquivalent = duration * coefficient;
+        const roundedDuration = Math.ceil(duration);
 
-      return {
-        ...session,
-        duration,
-        tdEquivalent,
-      };
-    });
+        totalSuppHours += roundedDuration;
 
-    const sortedSessions = [...sessionsWithDetails].sort((a, b) => {
-      const typeOrder = { COURS: 0, TD: 1, TP: 2 };
-      if (typeOrder[a.typeSession] !== typeOrder[b.typeSession]) {
-        return typeOrder[a.typeSession] - typeOrder[b.typeSession];
-      }
-
-      const dayOrder = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
-      return dayOrder.indexOf(a.jour) - dayOrder.indexOf(b.jour);
-    });
-
-    let remainingTDHours = 9;
-    const regularSessions = [];
-    const suppSessions = [];
-
-    for (const session of sortedSessions) {
-      if (remainingTDHours >= session.tdEquivalent) {
-        remainingTDHours -= session.tdEquivalent;
-        regularSessions.push(session);
-      } else if (remainingTDHours > 0) {
-        const regularPortion = remainingTDHours;
-        const suppPortion = session.tdEquivalent - remainingTDHours;
-        
-        const suppRatio = suppPortion / session.tdEquivalent;
-        const regularRatio = regularPortion / session.tdEquivalent;
-        const suppDuration = suppRatio * session.duration;
-        
-        const totalSessionMinutes = session.duration * 60;
-        const regularMinutes = regularRatio * totalSessionMinutes;
-        
-        const sessionStartMinutes = session.heureDebut * 60 + session.minuteDebut;
-        const suppStartMinutes = sessionStartMinutes + regularMinutes;
-        
-        const suppHeureDebut = Math.floor(suppStartMinutes / 60);
-        const suppMinuteDebut = Math.floor(suppStartMinutes % 60);
-        
-        const suppSession = {
+        return {
           ...session,
-          partially: true,
-          originalDuration: session.duration,
-          duration: suppDuration,
-          tdEquivalent: suppPortion,
-          regularPortion,
-          SuppHeureDebut: suppHeureDebut,
-          SuppMinuteDebut: suppMinuteDebut
-        };
-        
-        suppSessions.push(suppSession);
-        remainingTDHours = 0;
-      } else {
-        suppSessions.push({
-          ...session,
+          duration: roundedDuration,
+          tdEquivalent,
           partially: false,
           SuppHeureDebut: session.heureDebut,
-          SuppMinuteDebut: session.minuteDebut
-        });
+          SuppMinuteDebut: session.minuteDebut,
+        };
+      });
+      regularSessions = [];
+      totalRegularTDEquivalent = 0;
+    } else {
+      // Permanent: regular/supplementary calculation
+      const sessionsWithDetails = sessions.map((session) => {
+        const startTime = session.heureDebut + session.minuteDebut / 60;
+        const endTime = session.heureFin + session.minuteFin / 60;
+        const duration = endTime - startTime;
+
+        const coefficient =
+          session.typeSession === "COURS"
+            ? 1.5
+            : session.typeSession === "TD"
+            ? 1
+            : session.typeSession === "TP"
+            ? 0.75
+            : 1;
+
+        const tdEquivalent = duration * coefficient;
+
+        return {
+          ...session,
+          duration,
+          tdEquivalent,
+        };
+      });
+
+      const sortedSessions = [...sessionsWithDetails].sort((a, b) => {
+        const typeOrder = { COURS: 0, TD: 1, TP: 2 };
+        if (typeOrder[a.typeSession] !== typeOrder[b.typeSession]) {
+          return typeOrder[a.typeSession] - typeOrder[b.typeSession];
+        }
+
+        const dayOrder = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+        return dayOrder.indexOf(a.jour) - dayOrder.indexOf(b.jour);
+      });
+
+      let remainingTDHours = 9-teacher.charge;
+
+      for (const session of sortedSessions) {
+        if (remainingTDHours >= session.tdEquivalent) {
+          remainingTDHours -= session.tdEquivalent;
+          regularSessions.push(session);
+          totalRegularTDEquivalent += session.tdEquivalent;
+        } else if (remainingTDHours > 0) {
+          const regularPortion = remainingTDHours;
+          const suppPortion = session.tdEquivalent - remainingTDHours;
+
+          const suppRatio = suppPortion / session.tdEquivalent;
+          const regularRatio = regularPortion / session.tdEquivalent;
+          const suppDuration = suppRatio * session.duration;
+
+          const totalSessionMinutes = session.duration * 60;
+          const regularMinutes = regularRatio * totalSessionMinutes;
+
+          const sessionStartMinutes = session.heureDebut * 60 + session.minuteDebut;
+          const suppStartMinutes = sessionStartMinutes + regularMinutes;
+
+          const suppHeureDebut = Math.floor(suppStartMinutes / 60);
+          const suppMinuteDebut = Math.floor(suppStartMinutes % 60);
+
+          const roundedSuppDuration = Math.ceil(suppDuration);
+
+          suppSessions.push({
+            ...session,
+            partially: true,
+            originalDuration: session.duration,
+            duration: roundedSuppDuration,
+            tdEquivalent: suppPortion,
+            regularPortion,
+            SuppHeureDebut: suppHeureDebut,
+            SuppMinuteDebut: suppMinuteDebut,
+          });
+          totalSuppHours += roundedSuppDuration;
+          totalRegularTDEquivalent += regularPortion;
+          remainingTDHours = 0;
+        } else {
+          const roundedSessionDuration = Math.ceil(session.duration);
+          suppSessions.push({
+            ...session,
+            partially: false,
+            SuppHeureDebut: session.heureDebut,
+            SuppMinuteDebut: session.minuteDebut,
+            duration: roundedSessionDuration,
+          });
+          totalSuppHours += roundedSessionDuration;
+        }
       }
     }
 
-
-    const totalSuppHours = suppSessions.reduce(
-      (total, session) => total + session.duration,
-      0
-    );
-
+    // Save or update supplementary hours record
     let suppHoursRecord = await prisma.suppHours.findUnique({
-  where: { enseignantId: teacherIdInt }
-});
+      where: { enseignantId: teacherIdInt }
+    });
 
-if (suppHoursRecord) {
-  // Update existing record
-  suppHoursRecord = await prisma.suppHours.update({
-    where: { enseignantId: teacherIdInt },
-    data: { heuresTotal: totalSuppHours }
-  });
-
-  // Optionally, delete old session links if you want to reset them each time:
-  await prisma.suppHourSession.deleteMany({
-    where: { suppHoursId: suppHoursRecord.id }
-  });
-} else {
-  // Create new record
-  suppHoursRecord = await prisma.suppHours.create({
-    data: {
-      enseignantId: teacherIdInt,
-      heuresTotal: totalSuppHours
+    if (suppHoursRecord) {
+      suppHoursRecord = await prisma.suppHours.update({
+        where: { enseignantId: teacherIdInt },
+        data: { heuresTotal: totalSuppHours }
+      });
+      await prisma.suppHourSession.deleteMany({
+        where: { suppHoursId: suppHoursRecord.id }
+      });
+    } else {
+      suppHoursRecord = await prisma.suppHours.create({
+        data: {
+          enseignantId: teacherIdInt,
+          heuresTotal: totalSuppHours
+        }
+      });
     }
-  });
-}
 
-
+    // Create supp hour sessions links
     for (const session of suppSessions) {
       await prisma.suppHourSession.create({
         data: {
@@ -162,7 +197,7 @@ if (suppHoursRecord) {
       data: {
         id: suppHoursRecord.id,
         teacherId: teacherIdInt,
-        totalRegularTDEquivalent: 9 - remainingTDHours,
+        totalRegularTDEquivalent,
         totalSuppHours,
         suppSessionsCount: suppSessions.length,
         regularSessionsCount: regularSessions.length,
@@ -176,6 +211,7 @@ if (suppHoursRecord) {
     });
   }
 };
+
 const getTeacherSuppHours = async (req, res) => {
   try {
     const { teacherId } = req.params;

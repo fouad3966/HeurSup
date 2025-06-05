@@ -691,9 +691,7 @@ const Profile = () => {
               </div>
             </div>
             <div className="info-group">
-              <span className="info-label">
-                Droit aux heures supplémentaires
-              </span>
+              <span className="info-label">Vacataire</span>
               <div className="info-value-container">
                 {isEditing ? (
                   <input

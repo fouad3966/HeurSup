@@ -120,7 +120,7 @@ const NewProf = ({ onClose }) => {
         formData.methodePaiement === "CCP" ? "Postal" : "Bancaire";
 
       // Determine if teacher is vacataire based on affiliation
-      const vacataire = formData.affiliation === "Hors récole";
+      const vacataire = formData.enseignantResponsable;
 
       // Map matiere to enum value
       let matiere;
@@ -479,7 +479,7 @@ const NewProf = ({ onClose }) => {
                     />
                     <span className="checkbox-custom"></span>
                     <span className="checkbox-label">
-                      Droit aux heures supplémentaires
+                      Vacataire
                     </span>
                   </label>
                 </div>

@@ -57,10 +57,23 @@ const creerEnseignant = async (req, res) => {
       await tx.periodeTravailEnseignant.create({
         data: {
           enseignantId: enseignant.id,
-          periodeTravailId,
+          periodeTravailId:1,
         },
       });
 
+
+      await tx.periodeTravailEnseignant.create({
+        data: {
+          enseignantId: enseignant.id,
+          periodeTravailId:2,
+        },
+      });
+      await tx.periodeTravailEnseignant.create({
+        data: {
+          enseignantId: enseignant.id,
+          periodeTravailId:3,
+        },
+      });
       res.status(201).json({ message: "Enseignant créé avec succès", enseignant });
     });
   } catch (error) {
