@@ -10,9 +10,9 @@ HeurSup follows a standard **Client-Server Architecture** utilizing a modernized
 
 ```mermaid
 graph LR
-    Client[React Frontend\n(Vite)] <-->|REST API / JSON| API[Express Backend\n(Node.js)]
+    Client["React Frontend (Vite)"] <-->|REST API / JSON| API["Express Backend (Node.js)"]
     API <-->|Prisma ORM| DB[(PostgreSQL)]
-    API -->|Image Uploads| Cloudinary[Cloudinary CDN]
+    API -->|Image Uploads| Cloudinary["Cloudinary CDN"]
 ```
 
 ### Key Architectural Decisions
