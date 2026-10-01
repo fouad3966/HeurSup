@@ -25,6 +25,15 @@ async function main() {
     });
   }
 
+  // Look up grades by name (don't hardcode IDs)
+  const gradePROF = await prisma.grade.findFirst({ where: { nom: "PROF" } });
+  const gradeMCA = await prisma.grade.findFirst({ where: { nom: "MCA" } });
+  const gradeMCB = await prisma.grade.findFirst({ where: { nom: "MCB" } });
+
+  if (!gradePROF || !gradeMCA || !gradeMCB) {
+    throw new Error("Grades not found! Run seed.js first to create grades.");
+  }
+
   const profs = [
     {
       prenom: "Mohamed",
@@ -40,7 +49,7 @@ async function main() {
       numeroCompte: "123456789",
       droitHeuresSup: true,
       imageUrl: "/seed/prof_1.jpg",
-      gradeId: 1 // Professeur
+      gradeId: gradePROF.id
     },
     {
       prenom: "Amina",
@@ -56,7 +65,7 @@ async function main() {
       numeroCompte: "987654321",
       droitHeuresSup: true,
       imageUrl: "/seed/prof_2.jpg",
-      gradeId: 2 // MCA
+      gradeId: gradeMCA.id
     },
     {
       prenom: "Yassine",
@@ -72,7 +81,7 @@ async function main() {
       numeroCompte: "456123789",
       droitHeuresSup: false,
       imageUrl: "/seed/prof_3.jpg",
-      gradeId: 3 // MCB
+      gradeId: gradeMCB.id
     },
     {
       prenom: "Samia",
@@ -88,7 +97,7 @@ async function main() {
       numeroCompte: "789123456",
       droitHeuresSup: true,
       imageUrl: "/seed/prof_4.jpg",
-      gradeId: 3 // MCB
+      gradeId: gradeMCB.id
     },
     {
       prenom: "Rachid",
@@ -104,7 +113,7 @@ async function main() {
       numeroCompte: "321654987",
       droitHeuresSup: true,
       imageUrl: "/seed/prof_5.jpg",
-      gradeId: 1 // Professeur
+      gradeId: gradePROF.id
     },
     {
       prenom: "Tarek",
@@ -120,7 +129,7 @@ async function main() {
       numeroCompte: "654987321",
       droitHeuresSup: true,
       imageUrl: "/seed/prof_6.jpg",
-      gradeId: 2 // MCA
+      gradeId: gradeMCA.id
     }
   ];
 
