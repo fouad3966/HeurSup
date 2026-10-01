@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../utils/api";
 import Navbar from "../Prof/Navbar/navbar";
 import maleDefaultPic from "../../assets/ProfPage_assets/profilePicture.png";
 import femaleDefaultPic from "../../assets/ProfPage_assets/Prof.png";
@@ -45,24 +45,6 @@ const Profile = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  const apiRef = useRef(null);
-  if (apiRef.current === null) {
-    apiRef.current = axios.create({
-      baseURL: "http://localhost:5000",
-    });
-    apiRef.current.interceptors.request.use(
-      (config) => {
-        const token = localStorage.getItem("token");
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
-  }
-  const api = apiRef.current;
 
   const getDefaultImage = (genre) => {
     return genre === "Male" ? maleDefaultPic : femaleDefaultPic;
@@ -369,7 +351,7 @@ const Profile = () => {
       if (profileImage.startsWith("http")) {
         return profileImage;
       } else {
-        return `http://localhost:5000/${profileImage.replace(/\\/g, "/")}`;
+        return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${profileImage.replace(/\\/g, "/")}`;
       }
     }
     return getDefaultImage(profileData.personalInfo.sexe);

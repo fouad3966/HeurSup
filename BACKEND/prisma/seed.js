@@ -1,7 +1,6 @@
-const { PrismaClient } = require('@prisma/client');
+const prisma = require('./prisma');
 const { faker } = require('@faker-js/faker');
-
-const prisma = new PrismaClient();
+const bcrypt = require('bcrypt');
 
 async function seedDatabase() {
   try {
@@ -18,11 +17,12 @@ async function seedDatabase() {
     await prisma.admin.deleteMany();
     await prisma.jourFerie.deleteMany();
 
-    // Create Admin
+    // Create Admin with hashed password
+    const hashedPassword = await bcrypt.hash('admin', 10);
     await prisma.admin.create({
       data: {
         email: 'admin@example.com',
-        motDePasse: 'admin', // In production, hash this password
+        motDePasse: hashedPassword,
         nomComplet: 'Admin User',
         telephone: faker.phone.number(),
       },

@@ -2,50 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../../../utils/api";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import "./navbar.css";
 import logo from "../../../assets/AuthPage_assets/logowhite.png";
 import ProfilePicture from "../../../assets/ProfPage_assets/ProfilePicture.png";
 
-const StyledTabs = styled(Tabs)({
-  "& .MuiTabs-indicator": {
-    backgroundColor: "white",
-    height: "4px",
-    borderRadius: "2px",
-  },
-  "& .MuiTabs-flexContainer": {
-    gap: "20px",
-  },
-});
-
-const StyledTab = styled(Tab)({
-  color: "white",
-  fontFamily: '"Poppins", sans-serif',
-  fontSize: "16px",
-  textTransform: "none",
-  padding: "0 16px",
-  minWidth: "unset",
-  opacity: 0.8,
-  transition: "all 300ms cubic-bezier(0.4, 0, 0.2, 1)",
-  "&.Mui-selected": {
-    fontWeight: "600",
-    opacity: 1,
-    color: "white !important",
-  },
-  "&:hover": {
-    opacity: 1,
-  },
-});
-
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Map paths to tab indices
   const pathToTabIndex = {
     "/Prof": 0,
     "/Planning": 1,
@@ -62,12 +30,10 @@ const Navbar = () => {
   const [value, setValue] = useState(getCurrentTabIndex());
   const [userInfo, setUserInfo] = useState({
     username: "Admin",
-    role: "Admin",
+    role: "Administrateur",
   });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  // Fetch admin information when component mounts
   useEffect(() => {
     const fetchAdminInfo = async () => {
       const cachedAdminData = localStorage.getItem("adminData");
@@ -79,42 +45,31 @@ const Navbar = () => {
           if (parsedData.expiry && parsedData.expiry > now) {
             setUserInfo({
               username: parsedData.nomComplet,
-              role: "Admin",
+              role: "Administrateur",
             });
             setLoading(false);
             return;
           } else {
             localStorage.removeItem("adminData");
           }
-        } catch (err) {
-          console.error("Error parsing cached admin data:", err);
+        } catch {
           localStorage.removeItem("adminData");
         }
       }
 
       try {
         setLoading(true);
-        setError(null);
         const token = localStorage.getItem("token");
 
         if (!token) {
-          console.log("Token not found, skipping admin info fetch");
           setLoading(false);
           return;
         }
-
-        const api = axios.create({
-          baseURL: "http://localhost:5000",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
 
         const payload = JSON.parse(atob(token.split(".")[1]));
         const adminId = payload.id || payload.userId || payload.adminId;
 
         if (!adminId) {
-          console.log("Admin ID not found in token");
           setLoading(false);
           return;
         }
@@ -128,11 +83,10 @@ const Navbar = () => {
 
         setUserInfo({
           username: response.data.nomComplet,
-          role: "Admin",
+          role: "Administrateur",
         });
-      } catch (err) {
-        console.error("Error fetching admin information:", err);
-        setError("Failed to load admin information");
+      } catch {
+        // Silently fail — use default
       } finally {
         setLoading(false);
       }
@@ -164,57 +118,82 @@ const Navbar = () => {
   const navItems = [
     { label: "Enseignants", path: "/Prof" },
     { label: "Planning", path: "/Planning" },
-    { label: "Rapport", path: "/Rapport" },
+    { label: "Rapports", path: "/Rapport" },
   ];
 
   return (
     <nav className="navbar">
       <div className="navbar-left">
         <img
-          src={logo || "/placeholder.svg"}
-          alt="Logo"
+          src={logo}
+          alt="HeurSup"
           className="navbar-logo"
+          onClick={() => navigate("/Prof")}
         />
       </div>
 
       <Box
         sx={{
-          width: "100%",
-          maxWidth: "600px",
           display: "flex",
           justifyContent: "center",
+          flex: 1,
         }}
       >
-        <StyledTabs
+        <Tabs
           value={value}
           onChange={handleChange}
-          aria-label="nav tabs"
-          variant="scrollable"
-          scrollButtons="auto"
+          aria-label="Navigation principale"
+          variant="standard"
+          TabIndicatorProps={{
+            style: {
+              background: 'white',
+              height: 3,
+              borderRadius: '3px 3px 0 0',
+            }
+          }}
         >
           {navItems.map((item, index) => (
-            <StyledTab
+            <Tab
               key={item.path}
               label={item.label}
-              aria-controls={`nav-tabpanel-${index}`}
-              id={`nav-tab-${index}`}
               disableRipple
+              sx={{
+                color: 'rgba(255,255,255,0.7) !important',
+                fontFamily: '"Inter", sans-serif',
+                fontSize: '14px',
+                fontWeight: 500,
+                textTransform: 'none',
+                padding: '6px 20px',
+                minWidth: 'unset',
+                minHeight: '68px',
+                letterSpacing: '0.01em',
+                transition: 'all 150ms',
+                '&.Mui-selected': {
+                  color: 'white !important',
+                  fontWeight: 600,
+                },
+                '&:hover': {
+                  color: 'white !important',
+                  background: 'rgba(255,255,255,0.08)',
+                  borderRadius: '10px 10px 0 0',
+                },
+              }}
             />
           ))}
-        </StyledTabs>
+        </Tabs>
       </Box>
 
       <div className="navbar-right">
         <div className="user-info">
           <span className="user-name">
-            {loading ? "Chargement..." : error ? "Admin" : userInfo.username}
+            {loading ? "..." : userInfo.username}
           </span>
           <span className="user-role">{userInfo.role}</span>
         </div>
         <div className="profile-container">
           <img
-            src={ProfilePicture || "/placeholder.svg"}
-            alt="User"
+            src={ProfilePicture}
+            alt="Profil"
             className="profile-picture"
           />
           <div className="profile-dropdown">

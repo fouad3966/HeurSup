@@ -266,6 +266,7 @@
   box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
   margin-top: -40px;
 }
+
 .action-button.confirm {
   margin-top: 40px;
 }
@@ -673,6 +674,7 @@
     opacity: 0;
     transform: translateY(-20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -911,12 +913,12 @@ input[type="date"] {
   background-color: #f0f8ff;
 }
 
-.radio-option input:checked ~ .radio-custom {
+.radio-option input:checked~.radio-custom {
   background-color: #1e90ff;
   border-color: #1e90ff;
 }
 
-.radio-option input:checked ~ .radio-custom::after {
+.radio-option input:checked~.radio-custom::after {
   content: "";
   position: absolute;
   display: block;
@@ -966,12 +968,12 @@ input[type="date"] {
   background-color: #f0f8ff;
 }
 
-.checkbox-option input:checked ~ .checkbox-custom {
+.checkbox-option input:checked~.checkbox-custom {
   background-color: #1e90ff;
   border-color: #1e90ff;
 }
 
-.checkbox-option input:checked ~ .checkbox-custom::after {
+.checkbox-option input:checked~.checkbox-custom::after {
   content: "";
   position: absolute;
   display: block;

@@ -221,12 +221,12 @@
   background-color: #f0f2f5;
 }
 
-.radio-option input:checked ~ .radio-custom {
+.radio-option input:checked~.radio-custom {
   background-color: #007bff;
   border-color: #007bff;
 }
 
-.radio-option input:checked ~ .radio-custom::after {
+.radio-option input:checked~.radio-custom::after {
   content: "";
   position: absolute;
   display: block;
@@ -276,12 +276,12 @@
   background-color: #f0f2f5;
 }
 
-.checkbox-option input:checked ~ .checkbox-custom {
+.checkbox-option input:checked~.checkbox-custom {
   background-color: #007bff;
   border-color: #007bff;
 }
 
-.checkbox-option input:checked ~ .checkbox-custom::after {
+.checkbox-option input:checked~.checkbox-custom::after {
   content: "";
   position: absolute;
   display: block;
@@ -339,7 +339,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px; /* Uniform spacing */
+  gap: 16px;
+  /* Uniform spacing */
 }
 
 .success-container h2 {
@@ -363,7 +364,8 @@
 }
 
 .success-image {
-  width: auto; /* Larger than before */
+  width: auto;
+  /* Larger than before */
   height: 150px;
   margin: 8px 0 16px;
 }

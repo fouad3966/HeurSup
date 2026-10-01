@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../utils/api";
 import Navbar from "../Prof/Navbar/navbar";
 import "./planning.css";
 
@@ -28,25 +28,6 @@ const Planning = () => {
 
   // Add a state variable for the selected semester
   const [selectedSemester, setSelectedSemester] = useState("S1");
-
-  // Create axios instance with default config
-  const api = axios.create({
-    baseURL: "http://localhost:5000",
-  });
-
-  // Add request interceptor to add token to all requests
-  api.interceptors.request.use(
-    (config) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
 
   // Form data for new session
   const [newSession, setNewSession] = useState({

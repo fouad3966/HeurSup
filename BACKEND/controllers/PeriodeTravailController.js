@@ -92,4 +92,35 @@ async function getPeriodesGroupedByEnseignant(req, res) {
 }
 
 
-module.exports = { creerPeriodeTravail, modifierPeriodeTravail, supprimerPeriodeTravail ,getAllPeriodesTravail,getPeriodesGroupedByEnseignant};
+// GET open PeriodeTravail
+async function getOpenPeriodeTravail(req, res) {
+  try {
+    const now = new Date();
+    const period = await prisma.periodeTravail.findFirst({
+      where: {
+        dateDebut: { lte: now },
+        dateFin: { gte: now }
+      },
+      orderBy: { dateDebut: 'desc' }
+    });
+    
+    if (period) {
+      return res.status(200).json(period);
+    }
+    
+    // If no active period overlaps today, find the most recent one or the one starting next
+    const anyPeriod = await prisma.periodeTravail.findFirst({
+      orderBy: { dateDebut: 'desc' }
+    });
+    
+    if (anyPeriod) {
+      return res.status(200).json(anyPeriod);
+    }
+    
+    res.status(404).json({ message: "No period found" });
+  } catch (error) {
+    res.status(500).json({ error: `Failed to fetch open work period: ${error.message}` });
+  }
+}
+
+module.exports = { creerPeriodeTravail, modifierPeriodeTravail, supprimerPeriodeTravail ,getAllPeriodesTravail,getPeriodesGroupedByEnseignant, getOpenPeriodeTravail};

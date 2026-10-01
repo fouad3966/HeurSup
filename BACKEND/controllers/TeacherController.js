@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient(); // ✅ Single instance
+const prisma = require('../prisma/prisma');
 
 // Helper to find the closest static end date
 function getClosestStaticEndDate() {
@@ -268,8 +267,7 @@ const listerEnseignantsParGrade = async (req, res) => {
 
 
 const getEnseignantsParPeriode = async (req, res) => {
-  const { PrismaClient } = require('@prisma/client');
-  const prisma = new PrismaClient();
+
 
   try {
     const allLiens = await prisma.periodeTravailEnseignant.findMany({

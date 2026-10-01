@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../../utils/api";
 import "./newprof.css";
 import Felicitation from "../../../assets/NewProf_assets/felicitations.png";
 import maleDefaultPic from "../../../assets/ProfPage_assets/profilePicture.png";
@@ -30,25 +30,6 @@ const NewProf = ({ onClose }) => {
     numeroCompte: "",
     codeBancaire: "",
   });
-
-  // Create axios instance with default config
-  const api = axios.create({
-    baseURL: "http://localhost:5000",
-  });
-
-  // Add request interceptor to add token to all requests
-  api.interceptors.request.use(
-    (config) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

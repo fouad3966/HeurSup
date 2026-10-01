@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../utils/api";
 import Navbar from "../Prof/Navbar/navbar";
 import "./rapport.css";
 import {
@@ -28,21 +28,6 @@ const Rapport = () => {
   const [teachersObligations, setTeachersObligations] = useState([]);
   const [teacherTypeFilter, setTeacherTypeFilter] = useState("all");
   const [accountTypeFilter, setAccountTypeFilter] = useState("all");
-
-  const api = axios.create({
-    baseURL: "http://localhost:5000",
-  });
-
-  api.interceptors.request.use(
-    (config) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
 
   useEffect(() => {
     const fetchData = async () => {
