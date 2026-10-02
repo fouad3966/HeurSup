@@ -8,7 +8,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import "./navbar.css";
 import logo from "../../../assets/AuthPage_assets/logowhite.png";
-import ProfilePicture from "../../../assets/ProfPage_assets/ProfilePicture.png";
+import ProfilePicture from "../../../assets/ProfPage_assets/profilePicture.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
