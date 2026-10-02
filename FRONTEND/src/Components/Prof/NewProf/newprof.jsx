@@ -14,6 +14,7 @@ const NewProf = ({ onClose }) => {
   const [error, setError] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
+  const [grades, setGrades] = useState([]);
   const [formData, setFormData] = useState({
     nom: "",
     prenom: "",
@@ -22,7 +23,7 @@ const NewProf = ({ onClose }) => {
     email: "",
     telephone: "",
     profilePic: null,
-    grade: "1",
+    grade: "",
     affiliation: "De récole",
     chargeHeure: "",
     enseignantResponsable: true,
@@ -31,6 +32,23 @@ const NewProf = ({ onClose }) => {
     numeroCompte: "",
     codeBancaire: "",
   });
+
+  useEffect(() => {
+    // Fetch grades dynamically from the backend
+    const fetchGrades = async () => {
+      try {
+        const response = await api.get('/grades');
+        setGrades(response.data);
+        if (response.data.length > 0) {
+          setFormData(prev => ({ ...prev, grade: response.data[0].id.toString() }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch grades:", err);
+        setError("Impossible de charger les grades depuis le serveur.");
+      }
+    };
+    fetchGrades();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -82,6 +100,7 @@ const NewProf = ({ onClose }) => {
     } else if (currentStep === 2) {
       if (!formData.chargeHeure || Number(formData.chargeHeure) <= 0)
         errors.chargeHeure = "La charge horaire est obligatoire et doit être supérieure à 0";
+      if (!formData.grade) errors.grade = "Veuillez sélectionner un grade";
     } else if (currentStep === 3) {
       if (formData.methodePaiement === "CCP" && !formData.numeroCompte.trim())
         errors.numeroCompte = "Le numéro de compte CCP est obligatoire";
@@ -406,17 +425,23 @@ const NewProf = ({ onClose }) => {
 
               {step === 2 && (
                 <div className="form-step">
-                  <div className="form-group">
+                  <div className={`form-group ${fieldErrors.grade ? "has-error" : ""}`}>
                     <label>Grade <span className="required">*</span></label>
                     <select
                       name="grade"
                       value={formData.grade}
                       onChange={handleChange}
                     >
-                      <option value="2">Maître de conférence A (MCA)</option>
-                      <option value="3">Maître de conférence B (MCB)</option>
-                      <option value="1">Professeur (PROF)</option>
+                      <option value="" disabled>Sélectionnez un grade</option>
+                      {grades.map(grade => (
+                        <option key={grade.id} value={grade.id}>
+                          {grade.nom === "PROF" ? "Professeur (PROF)" :
+                           grade.nom === "MCA" ? "Maître de conférence A (MCA)" :
+                           grade.nom === "MCB" ? "Maître de conférence B (MCB)" : grade.nom}
+                        </option>
+                      ))}
                     </select>
+                    {fieldErrors.grade && <span className="field-error">{fieldErrors.grade}</span>}
                   </div>
 
                   <div className="form-group">

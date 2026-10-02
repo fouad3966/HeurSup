@@ -41,4 +41,14 @@ async function supprimerGrade(req, res) {
   }
 }
 
-module.exports = { creerGrade, modifierGrade, supprimerGrade };
+// GET All Grades
+async function obtenirTousLesGrades(req, res) {
+  try {
+    const grades = await prisma.grade.findMany();
+    res.status(200).json(grades);
+  } catch (error) {
+    res.status(500).json({ error: `Failed to fetch grades: ${error.message}` });
+  }
+}
+
+module.exports = { creerGrade, modifierGrade, supprimerGrade, obtenirTousLesGrades };

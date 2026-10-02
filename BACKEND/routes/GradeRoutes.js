@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { creerGrade, modifierGrade, supprimerGrade } = require('../controllers/GradeController');
+const { creerGrade, modifierGrade, supprimerGrade, obtenirTousLesGrades } = require('../controllers/GradeController');
 const verifyToken = require('../middleware/auth');
 
 router.post('/grades', verifyToken, creerGrade);
+router.get('/grades', verifyToken, obtenirTousLesGrades);
 router.put('/grades/:id', verifyToken, modifierGrade);
 router.delete('/grades/:id', verifyToken, supprimerGrade);
 
