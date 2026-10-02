@@ -18,6 +18,15 @@
 
 ---
 
+## 🌐 Live Demo
+You can test the application live here: **[https://heur-sup.vercel.app/](https://heur-sup.vercel.app/)**
+
+**Test Credentials (Admin):**
+- **Email:** `admin@example.com`
+- **Password:** `admin`
+
+---
+
 ## 📖 About (À Propos)
 
 **HeurSup** (Heures Supplémentaires) is a comprehensive web application designed to automate and simplify the tracking, management, and calculation of supplementary teaching hours for university professors. 
