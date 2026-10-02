@@ -1491,9 +1491,9 @@ const Planning = () => {
       </div>
 
       {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal-container">
-            <div className="modal-header">
+        <div className="planning-modal-overlay">
+          <div className="planning-modal-container">
+            <div className="planning-modal-header">
               <h2>Ajout d'un créneau</h2>
               <p>Provide the necessary informations for the new timeslot</p>
               <button
@@ -1503,7 +1503,7 @@ const Planning = () => {
                 ×
               </button>
             </div>
-            <div className="modal-content">
+            <div className="planning-modal-content">
               <div className="form-row">
                 <div className="form-group">
                   <label>Semestre</label>
@@ -1647,7 +1647,7 @@ const Planning = () => {
                 </select>
               </div>
             </div>
-            <div className="modal-footer">
+            <div className="planning-modal-footer">
               <button className="save-button" onClick={handleAddSession}>
                 Enregistrer
               </button>
@@ -1657,8 +1657,8 @@ const Planning = () => {
       )}
 
       {showSessionModal && selectedSession && (
-        <div className="modal-overlay">
-          <div className="modal-container session-details-modal">
+        <div className="planning-modal-overlay">
+          <div className="planning-modal-container session-details-modal">
             <button
               className="close-button"
               onClick={() => setShowSessionModal(false)}
@@ -1742,9 +1742,9 @@ const Planning = () => {
       )}
 
       {showHolidayModal && (
-        <div className="modal-overlay">
-          <div className="modal-container holiday-modal">
-            <div className="modal-header">
+        <div className="planning-modal-overlay">
+          <div className="planning-modal-container holiday-modal">
+            <div className="planning-modal-header">
               <h2>Les jours fériés</h2>
               <button
                 className="close-button"
@@ -1753,7 +1753,7 @@ const Planning = () => {
                 ×
               </button>
             </div>
-            <div className="modal-content">
+            <div className="planning-modal-content">
               <div className="form-row">
                 <div className="form-group">
                   <label>Jour</label>
@@ -1776,7 +1776,7 @@ const Planning = () => {
                 </div>
               </div>
             </div>
-            <div className="modal-footer">
+            <div className="planning-modal-footer">
               <button className="save-button" onClick={handleAddHoliday}>
                 Enregistrer
               </button>
@@ -1786,9 +1786,9 @@ const Planning = () => {
       )}
 
       {showAbsenceModal && (
-        <div className="modal-overlay">
-          <div className="modal-container absence-modal">
-            <div className="modal-header">
+        <div className="planning-modal-overlay">
+          <div className="planning-modal-container absence-modal">
+            <div className="planning-modal-header">
               <h2>Ajout d'une absence</h2>
               <p>
                 Enregistrez une absence pour ce créneau en précisant la raison.
@@ -1800,7 +1800,7 @@ const Planning = () => {
                 ×
               </button>
             </div>
-            <div className="modal-content">
+            <div className="planning-modal-content">
               <div className="form-row">
                 <div className="form-group">
                   <label>Jour Début</label>
@@ -1880,7 +1880,7 @@ const Planning = () => {
                 </label>
               </div>
             </div>
-            <div className="modal-footer">
+            <div className="planning-modal-footer">
               <button className="save-button" onClick={handleAddAbsence}>
                 Enregistrer
               </button>

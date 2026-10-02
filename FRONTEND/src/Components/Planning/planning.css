@@ -645,7 +645,7 @@
 }
 
 /* Modal Styles */
-.modal-overlay {
+.planning-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -659,7 +659,7 @@
   backdrop-filter: blur(3px);
 }
 
-.modal-container {
+.planning-modal-container {
   background-color: white;
   border-radius: 12px;
   width: 90%;
@@ -684,20 +684,20 @@
   }
 }
 
-.modal-header {
+.planning-modal-header {
   padding: 20px 25px;
   border-bottom: 1px solid #f0f0f0;
   flex-shrink: 0;
 }
 
-.modal-header h2 {
+.planning-modal-header h2 {
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 6px;
   color: #333;
 }
 
-.modal-header p {
+.planning-modal-header p {
   font-size: 14px;
   color: #666;
   line-height: 1.4;
@@ -726,14 +726,14 @@
   color: #333;
 }
 
-.modal-content {
+.planning-modal-content {
   padding: 25px;
   overflow-y: auto;
   flex: 1;
   min-height: 0;
 }
 
-.modal-footer {
+.planning-modal-footer {
   padding: 15px 25px;
   border-top: 1px solid #f0f0f0;
   display: flex;
