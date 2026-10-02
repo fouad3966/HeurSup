@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import heroImg from "../../assets/AuthPage_assets/hero.jpg";
-import logo from "../../assets/AuthPage_assets/logo.png";
+import logo from "../../assets/AuthPage_assets/logowhite.png";
 import "./authpage.css";
 
 const AuthPage = () => {
