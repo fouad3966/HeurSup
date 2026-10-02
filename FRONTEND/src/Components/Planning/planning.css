@@ -664,9 +664,12 @@
   border-radius: 12px;
   width: 90%;
   max-width: 500px;
+  max-height: 90vh;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   position: relative;
   animation: modalFadeIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes modalFadeIn {
@@ -684,6 +687,7 @@
 .modal-header {
   padding: 20px 25px;
   border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -724,6 +728,9 @@
 
 .modal-content {
   padding: 25px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .modal-footer {
