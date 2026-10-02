@@ -21,6 +21,7 @@ const Profile = () => {
   const fileInputRef = useRef(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [newProfilePic, setNewProfilePic] = useState(null);
+  const [allGrades, setAllGrades] = useState([]);
   const [profileData, setProfileData] = useState({
     personalInfo: {
       nom: "",
@@ -110,6 +111,14 @@ const Profile = () => {
 
         setProfileImage(teacherToUse.imageUrl || null);
         setTeacherId(teacherIdToUse);
+
+        // Fetch all available grades dynamically
+        try {
+          const gradesListResponse = await api.get("/grades");
+          setAllGrades(gradesListResponse.data);
+        } catch (err) {
+          console.error("Error fetching all grades:", err);
+        }
 
         const gradesResponse = await api.get("/enseignant-grades");
         const teacherGrades = gradesResponse.data.filter(
@@ -243,12 +252,10 @@ const Profile = () => {
       const typeCompte =
         profileData.paymentInfo.methode === "CCP" ? "Postal" : "Bancaire";
       const vacataire = profileData.academicInfo.affiliation === "Hors l'école";
-      const newGradeId =
-        profileData.academicInfo.grade === "MCB"
-          ? 2
-          : profileData.academicInfo.grade === "PROF"
-          ? 3
-          : 1; // MCA maps to 3
+      
+      // Dynamically find the ID matching the selected grade name
+      const matchingGrade = allGrades.find(g => g.nom === profileData.academicInfo.grade);
+      const newGradeId = matchingGrade ? matchingGrade.id : 1; // Fallback to 1 if not found
 
       let teacherData = {
         prenom: profileData.personalInfo.prenom,
