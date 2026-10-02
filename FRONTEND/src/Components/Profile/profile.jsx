@@ -348,7 +348,7 @@ const Profile = () => {
   const getImageSrc = () => {
     if (imagePreview) return imagePreview;
     if (profileImage) {
-      if (profileImage.startsWith("http")) {
+      if (profileImage.startsWith("http") || profileImage.startsWith("/")) {
         return profileImage;
       } else {
         return `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/${profileImage.replace(/\\/g, "/")}`;
@@ -390,62 +390,25 @@ const Profile = () => {
       <Navbar />
       <div className="profile-content">
         <div className="profile-header">
-          <div
-            className="profile-image-container"
-            onClick={handleImageClick}
-            style={{
-              position: "relative",
-              cursor: isEditing ? "pointer" : "default",
-            }}
-          >
+          <div className="profile-avatar-section" onClick={handleImageClick}>
             <img
               src={getImageSrc() || "/placeholder.svg"}
               alt="Profile"
-              className="profile-avatar"
+              className={`profile-avatar ${isEditing ? 'editing' : ''}`}
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = getDefaultImage(profileData.personalInfo.sexe);
               }}
               style={{ opacity: imageUploading ? 0.5 : 1 }}
             />
-            {isEditing && (
-              <div
-                className="image-overlay"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "rgba(0,0,0,0.2)",
-                  borderRadius: "50%",
-                  opacity: 0,
-                  transition: "opacity 0.2s",
-                  pointerEvents: "none",
-                }}
-              >
-                <span style={{ color: "white", fontSize: "14px" }}>Change</span>
+            {isEditing && !imageUploading && (
+              <div className="camera-overlay">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
               </div>
             )}
             {imageUploading && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "rgba(0,0,0,0.5)",
-                  borderRadius: "50%",
-                }}
-              >
-                <span style={{ color: "white" }}>Uploading...</span>
+              <div className="camera-overlay" style={{ opacity: 1, background: 'rgba(0,0,0,0.6)' }}>
+                <span style={{ fontSize: '12px' }}>Uploading...</span>
               </div>
             )}
             <input
@@ -456,20 +419,47 @@ const Profile = () => {
               style={{ display: "none" }}
             />
           </div>
-          <div className="profile-identity">
+          
+          <div className="profile-header-info">
             <h1>{fullName}</h1>
+            <div className="profile-title">{profileData.academicInfo.matiere ? `Enseignant en ${profileData.academicInfo.matiere}` : 'Enseignant'}</div>
+            <div className="profile-grade-chip">
+              {profileData.academicInfo.grade === "MCB"
+                ? "Maître de conférence B"
+                : profileData.academicInfo.grade === "PROF"
+                ? "Professeur"
+                : "Maître de conférence A"}
+            </div>
           </div>
-          <button
-            className="edit-button"
-            onClick={isEditing ? handleSave : () => setIsEditing(true)}
-            disabled={saving}
-          >
-            {isEditing
-              ? saving
-                ? "Enregistrement..."
-                : "Enregistrer"
-              : "Modifier"}
-          </button>
+          
+          <div className="profile-header-actions">
+            {isEditing ? (
+              <>
+                <button
+                  className="btn-cancel"
+                  onClick={() => setIsEditing(false)}
+                  disabled={saving}
+                >
+                  Annuler
+                </button>
+                <button
+                  className="btn-save"
+                  onClick={handleSave}
+                  disabled={saving}
+                >
+                  {saving ? "Enregistrement..." : "Enregistrer"}
+                </button>
+              </>
+            ) : (
+              <button
+                className="btn-edit"
+                onClick={() => setIsEditing(true)}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                Modifier
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="profile-sections">
