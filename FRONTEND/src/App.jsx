@@ -7,7 +7,7 @@ import Navbar from "./Components/Prof/Navbar/navbar";
 import BodyP1 from "./Components/Prof/Body/bodyP1";
 import Profile from "./Components/Profile/profile";
 import Planning from "./Components/Planning/planning";
-import Rapport from "./Components/Rapport/Rapport";
+import Rapport from "./Components/Rapport/rapport";
 
 function App() {
   return (
