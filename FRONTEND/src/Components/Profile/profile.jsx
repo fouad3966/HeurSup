@@ -472,266 +472,200 @@ const Profile = () => {
           </button>
         </div>
 
-        <div className="information-container">
-          <h2 className="section-title">Informations personnelles</h2>
-          <div className="info-grid">
-            <div className="info-group">
-              <span className="info-label">Nom</span>
-              <div className="info-value-container">
-                {renderEditableField(
-                  "personalInfo",
-                  "nom",
-                  profileData.personalInfo.nom
-                )}
+        <div className="profile-sections">
+          
+          <div className="profile-section">
+            <div className="section-header">
+              <div className="section-icon personal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
               </div>
+              <h3>Informations personnelles</h3>
             </div>
-            <div className="info-group">
-              <span className="info-label">Prénom</span>
-              <div className="info-value-container">
-                {renderEditableField(
-                  "personalInfo",
-                  "prenom",
-                  profileData.personalInfo.prenom
-                )}
-              </div>
-            </div>
-            <div className="info-group">
-              <span className="info-label">Naissance</span>
-              <div className="info-value-container">
-                {renderEditableField(
-                  "personalInfo",
-                  "naissance",
-                  profileData.personalInfo.naissance
-                )}
-              </div>
-            </div>
-            <div className="info-group">
-              <span className="info-label">Sexe</span>
-              <div className="info-value-container">
-                {isEditing ? (
-                  <select
-                    value={profileData.personalInfo.sexe}
-                    onChange={(e) =>
-                      handleInputChange("personalInfo", "sexe", e.target.value)
-                    }
-                    className="editable-select"
-                  >
-                    <option value="Female">Femme</option>
-                    <option value="Male">Homme</option>
-                  </select>
-                ) : (
-                  <span className="info-value">
-                    {profileData.personalInfo.sexe === "Male"
-                      ? "Homme"
-                      : "Femme"}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="info-subsection">
-            <h3 className="info-subheader">Email Address</h3>
-            <div className="info-value-with-icon">
-              <div className="info-icon">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                  <polyline points="22,6 12,13 2,6"></polyline>
-                </svg>
-              </div>
-              <div className="info-value-mail">
-                {renderEditableField(
-                  "personalInfo",
-                  "email",
-                  profileData.personalInfo.email
-                )}
+            <div className="section-body">
+              <div className="info-grid">
+                <div className="info-item">
+                  <span className="info-label">Nom</span>
+                  <div className="info-value-container">
+                    {renderEditableField("personalInfo", "nom", profileData.personalInfo.nom)}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Prénom</span>
+                  <div className="info-value-container">
+                    {renderEditableField("personalInfo", "prenom", profileData.personalInfo.prenom)}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Naissance</span>
+                  <div className="info-value-container">
+                    {renderEditableField("personalInfo", "naissance", profileData.personalInfo.naissance)}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Sexe</span>
+                  <div className="info-value-container">
+                    {isEditing ? (
+                      <select
+                        value={profileData.personalInfo.sexe}
+                        onChange={(e) => handleInputChange("personalInfo", "sexe", e.target.value)}
+                        className="editable-select"
+                      >
+                        <option value="Female">Femme</option>
+                        <option value="Male">Homme</option>
+                      </select>
+                    ) : (
+                      <span className="info-value">{profileData.personalInfo.sexe === "Male" ? "Homme" : "Femme"}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Email Address</span>
+                  <div className="info-value-container">
+                    {renderEditableField("personalInfo", "email", profileData.personalInfo.email)}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Numéro de téléphone</span>
+                  <div className="info-value-container">
+                    {renderEditableField("personalInfo", "phone", profileData.personalInfo.phone)}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="info-subsection">
-            <h3 className="info-subheader">Numéro de téléphone</h3>
-            <div className="info-value-with-icon">
-              <div className="info-icon">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
+          <div className="profile-section">
+            <div className="section-header">
+              <div className="section-icon academic">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
               </div>
-              <span className="info-value-phone">
-                {renderEditableField(
-                  "personalInfo",
-                  "phone",
-                  profileData.personalInfo.phone
-                )}
-              </span>
+              <h3>Informations académiques</h3>
             </div>
-          </div>
-
-          <h2 className="section-title">Informations académiques</h2>
-          <div className="info-grid">
-            <div className="info-group">
-              <span className="info-label">Grade</span>
-              <div className="info-value-container">
-                {isEditing ? (
-                  <select
-                    value={profileData.academicInfo.grade}
-                    onChange={(e) =>
-                      handleInputChange("academicInfo", "grade", e.target.value)
-                    }
-                    className="editable-select"
-                  >
-                    <option value="MCB">Maître de conférence B</option>
-                    <option value="PROF">Professeur</option>
-                    <option value="MCA">Maître de conférence A</option>
-                  </select>
-                ) : (
-                  <span className="info-value">
-                    {profileData.academicInfo.grade === "MCB"
-                      ? "Maître de conférence B"
-                      : profileData.academicInfo.grade === "PROF"
-                      ? "Professeur"
-                      : "Maître de conférence A"}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className="info-group">
-              <span className="info-label">Affiliation</span>
-              <div className="info-value-container">
-                {isEditing ? (
-                  <select
-                    value={profileData.academicInfo.affiliation}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "academicInfo",
-                        "affiliation",
-                        e.target.value
-                      )
-                    }
-                    className="editable-select"
-                  >
-                    <option value="De l'école">De l'école</option>
-                    <option value="Hors l'école">Hors l'école</option>
-                  </select>
-                ) : (
-                  <span className="info-value">
-                    {profileData.academicInfo.affiliation}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className="info-group">
-              <span className="info-label">Charge d'heure</span>
-              <div className="info-value-container">
-                {renderEditableField(
-                  "academicInfo",
-                  "chargeHeure",
-                  profileData.academicInfo.chargeHeure
-                )}
-              </div>
-            </div>
-            <div className="info-group">
-              <span className="info-label">Matière</span>
-              <div className="info-value-container">
-                {isEditing ? (
-                  <select
-                    value={profileData.academicInfo.matiere}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "academicInfo",
-                        "matiere",
-                        e.target.value
-                      )
-                    }
-                    className="editable-select"
-                  >
-                    <option value="Resaux">Réseaux</option>
-                    <option value="Algo">Algorithme</option>
-                    <option value="Systeme">Système</option>
-                  </select>
-                ) : (
-                  <span className="info-value">
-                    {profileData.academicInfo.matiere === "Resaux"
-                      ? "Réseaux"
-                      : profileData.academicInfo.matiere === "Algo"
-                      ? "Algorithme"
-                      : "Système"}
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className="info-group">
-              <span className="info-label">Vacataire</span>
-              <div className="info-value-container">
-                {isEditing ? (
-                  <input
-                    type="checkbox"
-                    checked={profileData.academicInfo.droitHeuresSup}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "academicInfo",
-                        "droitHeuresSup",
-                        e.target.checked
-                      )
-                    }
-                    className="editable-checkbox"
-                  />
-                ) : (
-                  <span className="info-value">
-                    {profileData.academicInfo.droitHeuresSup ? "Oui" : "Non"}
-                  </span>
-                )}
+            <div className="section-body">
+              <div className="info-grid">
+                <div className="info-item">
+                  <span className="info-label">Grade</span>
+                  <div className="info-value-container">
+                    {isEditing ? (
+                      <select
+                        value={profileData.academicInfo.grade}
+                        onChange={(e) => handleInputChange("academicInfo", "grade", e.target.value)}
+                        className="editable-select"
+                      >
+                        <option value="MCB">Maître de conférence B</option>
+                        <option value="PROF">Professeur</option>
+                        <option value="MCA">Maître de conférence A</option>
+                      </select>
+                    ) : (
+                      <span className="info-value">
+                        {profileData.academicInfo.grade === "MCB"
+                          ? "Maître de conférence B"
+                          : profileData.academicInfo.grade === "PROF"
+                          ? "Professeur"
+                          : "Maître de conférence A"}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Affiliation</span>
+                  <div className="info-value-container">
+                    {isEditing ? (
+                      <select
+                        value={profileData.academicInfo.affiliation}
+                        onChange={(e) => handleInputChange("academicInfo", "affiliation", e.target.value)}
+                        className="editable-select"
+                      >
+                        <option value="De l'école">De l'école</option>
+                        <option value="Hors l'école">Hors l'école</option>
+                      </select>
+                    ) : (
+                      <span className="info-value">{profileData.academicInfo.affiliation}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Charge d'heure</span>
+                  <div className="info-value-container">
+                    {renderEditableField("academicInfo", "chargeHeure", profileData.academicInfo.chargeHeure)}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Matière</span>
+                  <div className="info-value-container">
+                    {isEditing ? (
+                      <select
+                        value={profileData.academicInfo.matiere}
+                        onChange={(e) => handleInputChange("academicInfo", "matiere", e.target.value)}
+                        className="editable-select"
+                      >
+                        <option value="Resaux">Réseaux</option>
+                        <option value="Algo">Algorithme</option>
+                        <option value="Systeme">Système</option>
+                      </select>
+                    ) : (
+                      <span className="info-value">
+                        {profileData.academicInfo.matiere === "Resaux"
+                          ? "Réseaux"
+                          : profileData.academicInfo.matiere === "Algo"
+                          ? "Algorithme"
+                          : "Système"}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Vacataire</span>
+                  <div className="info-value-container">
+                    {isEditing ? (
+                      <input
+                        type="checkbox"
+                        checked={profileData.academicInfo.droitHeuresSup}
+                        onChange={(e) => handleInputChange("academicInfo", "droitHeuresSup", e.target.checked)}
+                        className="editable-checkbox"
+                        style={{ width: '20px', height: '20px', accentColor: '#4f46e5' }}
+                      />
+                    ) : (
+                      <span className="info-value">{profileData.academicInfo.droitHeuresSup ? "Oui" : "Non"}</span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <h2 className="section-title">Informations de paiement</h2>
-          <div className="info-grid">
-            <div className="info-group">
-              <span className="info-label">Méthode</span>
-              <div className="info-value-container">
-                {isEditing ? (
-                  <select
-                    value={profileData.paymentInfo.methode}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "paymentInfo",
-                        "methode",
-                        e.target.value
-                      )
-                    }
-                    className="editable-select"
-                  >
-                    <option value="CCP">CCP</option>
-                    <option value="Bancaire">Bancaire</option>
-                  </select>
-                ) : (
-                  <span className="info-value">
-                    {profileData.paymentInfo.methode}
-                  </span>
-                )}
+          <div className="profile-section">
+            <div className="section-header">
+              <div className="section-icon payment">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
               </div>
+              <h3>Informations de paiement</h3>
             </div>
-            <div className="info-group">
-              <span className="info-label">N° de compte</span>
-              <div className="info-value-container">
-                {renderEditableField(
-                  "paymentInfo",
-                  "compte",
-                  profileData.paymentInfo.compte
-                )}
+            <div className="section-body">
+              <div className="info-grid">
+                <div className="info-item">
+                  <span className="info-label">Méthode</span>
+                  <div className="info-value-container">
+                    {isEditing ? (
+                      <select
+                        value={profileData.paymentInfo.methode}
+                        onChange={(e) => handleInputChange("paymentInfo", "methode", e.target.value)}
+                        className="editable-select"
+                      >
+                        <option value="CCP">CCP</option>
+                        <option value="Bancaire">Bancaire</option>
+                      </select>
+                    ) : (
+                      <span className="info-value">{profileData.paymentInfo.methode}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">N° de compte</span>
+                  <div className="info-value-container">
+                    {renderEditableField("paymentInfo", "compte", profileData.paymentInfo.compte)}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
