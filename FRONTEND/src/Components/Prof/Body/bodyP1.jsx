@@ -6,7 +6,7 @@ import api from "../../../utils/api";
 import { useToast } from "../../Toast/Toast";
 import "./bodyP1.css";
 import { FaPhone, FaEnvelope, FaTrash, FaSearch, FaPlus, FaUsers, FaGraduationCap, FaChalkboardTeacher } from "react-icons/fa";
-import NewProf from "../NewProf/NewProf";
+import NewProf from "../NewProf/newprof";
 
 import maleDefaultPic from "../../../assets/ProfPage_assets/profilePicture.png";
 import femaleDefaultPic from "../../../assets/ProfPage_assets/Prof.png";
