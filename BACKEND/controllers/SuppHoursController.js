@@ -397,7 +397,7 @@ const getTeacherSuppHoursInPeriod = async (req, res) => {
     }
 
     // Get current grade (active during period)
-    const enseignantGrades = await prisma.enseignantGrade.findMany({
+    let enseignantGrades = await prisma.enseignantGrade.findMany({
       where: {
         enseignantId: teacherIdInt,
         dateDebut: { lte: endDateTime },
@@ -409,6 +409,17 @@ const getTeacherSuppHoursInPeriod = async (req, res) => {
       include: { grade: true },
       orderBy: { dateDebut: 'desc' }
     });
+
+    // Fallback: If no grade matched the exact period, just get the latest known grade
+    if (enseignantGrades.length === 0) {
+      enseignantGrades = await prisma.enseignantGrade.findMany({
+        where: { enseignantId: teacherIdInt },
+        include: { grade: true },
+        orderBy: { dateDebut: 'desc' },
+        take: 1
+      });
+    }
+    
     let grade = enseignantGrades.length > 0 ? enseignantGrades[0].grade.nom : null;
 
     // Calculate montantNet

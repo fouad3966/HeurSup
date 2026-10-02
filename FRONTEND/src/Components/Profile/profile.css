@@ -10,7 +10,7 @@
 .profile-container {
   max-width: 960px;
   margin: 0 auto;
-  padding: 32px 24px 60px;
+  padding: 0;
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -398,7 +398,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .profile-container {
-    padding: 16px;
+    padding: 0;
   }
 
   .profile-header {

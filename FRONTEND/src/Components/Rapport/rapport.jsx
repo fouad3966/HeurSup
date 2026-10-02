@@ -130,8 +130,8 @@ const Rapport = () => {
         console.log("Calculated Global Supp Hours:", globalSuppHours);
         setTotalSuppHours(Number.parseFloat(globalSuppHours.toFixed(1)));
 
-        // Fetch obligation data for all teachers for the year 2025
-        const year = 2025;
+        // Fetch obligation data for all teachers for the current year
+        const year = currentYear;
         const startDate = `${year}-01-01`;
         const endDate = `${year}-12-31`;
         const obligationsData = [];
