@@ -31,6 +31,37 @@ const creerEnseignant = async (req, res) => {
       gradeId, periodeTravailId, imageUrl, imagePublicId,
     } = req.body;
 
+    // Validate required fields with specific messages
+    const missingFields = [];
+    if (!prenom) missingFields.push("Prénom");
+    if (!nom) missingFields.push("Nom");
+    if (!email) missingFields.push("Email");
+    if (!dateNaissance) missingFields.push("Date de naissance");
+    if (!genre) missingFields.push("Genre");
+    if (!numeroTelephone) missingFields.push("Numéro de téléphone");
+    if (!matiere) missingFields.push("Matière");
+    if (!typeCompte) missingFields.push("Type de compte");
+    if (!numeroCompte) missingFields.push("Numéro de compte");
+    if (!gradeId) missingFields.push("Grade");
+
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        erreur: `Champs obligatoires manquants : ${missingFields.join(", ")}`
+      });
+    }
+
+    // Check for duplicate email
+    const existingTeacher = await prisma.enseignant.findUnique({ where: { email } });
+    if (existingTeacher) {
+      return res.status(400).json({ erreur: "Un enseignant avec cet email existe déjà" });
+    }
+
+    // Verify grade exists
+    const grade = await prisma.grade.findUnique({ where: { id: Number(gradeId) } });
+    if (!grade) {
+      return res.status(400).json({ erreur: "Grade invalide" });
+    }
+
     const now = new Date();
 
     await prisma.$transaction(async (tx) => {
@@ -39,8 +70,8 @@ const creerEnseignant = async (req, res) => {
           prenom, nom, email,
           dateNaissance: new Date(dateNaissance),
           genre, numeroTelephone,
-          vacataire, charge, matiere,
-          typeCompte, numeroCompte, droitHeuresSup, imageUrl,
+          vacataire: Boolean(vacataire), charge: Number(charge) || 0, matiere,
+          typeCompte, numeroCompte, droitHeuresSup: Boolean(droitHeuresSup), imageUrl,
            imagePublicId,
         },
       });
@@ -48,36 +79,27 @@ const creerEnseignant = async (req, res) => {
       await tx.enseignantGrade.create({
         data: {
           enseignantId: enseignant.id,
-          gradeId,
+          gradeId: Number(gradeId),
           dateDebut: now,
         },
       });
 
-      await tx.periodeTravailEnseignant.create({
-        data: {
-          enseignantId: enseignant.id,
-          periodeTravailId:1,
-        },
-      });
+      // Dynamically find all existing periods and link the teacher to them
+      const allPeriods = await tx.periodeTravail.findMany();
+      for (const period of allPeriods) {
+        await tx.periodeTravailEnseignant.create({
+          data: {
+            enseignantId: enseignant.id,
+            periodeTravailId: period.id,
+          },
+        });
+      }
 
-
-      await tx.periodeTravailEnseignant.create({
-        data: {
-          enseignantId: enseignant.id,
-          periodeTravailId:2,
-        },
-      });
-      await tx.periodeTravailEnseignant.create({
-        data: {
-          enseignantId: enseignant.id,
-          periodeTravailId:3,
-        },
-      });
       res.status(201).json({ message: "Enseignant créé avec succès", enseignant });
     });
   } catch (error) {
     console.error("Erreur création enseignant:", error);
-    res.status(500).json({ message: "Erreur serveur" });
+    res.status(500).json({ erreur: "Erreur serveur lors de la création de l'enseignant" });
   }
 };
 

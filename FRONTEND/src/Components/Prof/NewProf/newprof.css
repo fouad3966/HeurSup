@@ -17,8 +17,11 @@
   border-radius: 4px;
   width: 90%;
   max-width: 500px;
+  max-height: 90vh;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
@@ -26,6 +29,7 @@
   background-color: #f8f9fa;
   border-bottom: 1px solid #e9ecef;
   position: relative;
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -58,6 +62,7 @@
   padding: 16px 0;
   gap: 40px;
   position: relative;
+  flex-shrink: 0;
 }
 
 .progress-bar::before {
@@ -90,6 +95,54 @@
 .step-indicator.active {
   background-color: #007bff;
   color: white;
+}
+
+/* ── Error Banner ── */
+.error-banner {
+  background-color: #fff3f3;
+  border: 1px solid #ffcdd2;
+  color: #c62828;
+  padding: 10px 16px;
+  margin: 0 20px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.error-icon {
+  font-size: 1rem;
+}
+
+/* ── Scrollable Form Area ── */
+.form-step-scrollable {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Required Asterisk ── */
+.required {
+  color: #e53935;
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+/* ── Field-Level Errors ── */
+.field-error {
+  display: block;
+  color: #e53935;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.form-group.has-error input,
+.form-group.has-error select {
+  border-color: #e53935;
+  background-color: #fff8f8;
 }
 
 .form-step {

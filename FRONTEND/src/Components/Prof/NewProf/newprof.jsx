@@ -12,6 +12,7 @@ const NewProf = ({ onClose }) => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     nom: "",
@@ -21,11 +22,11 @@ const NewProf = ({ onClose }) => {
     email: "",
     telephone: "",
     profilePic: null,
-    grade: "1", // Store grade ID directly
+    grade: "1",
     affiliation: "De récole",
     chargeHeure: "",
-    enseignantResponsable: true, // Default to true for droitHeuresSup
-    matiere: "Resaux", // Default to one of the enum values
+    enseignantResponsable: true,
+    matiere: "Resaux",
     methodePaiement: "CCP",
     numeroCompte: "",
     codeBancaire: "",
@@ -37,19 +38,22 @@ const NewProf = ({ onClose }) => {
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
+    // Clear field error when user types
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: null }));
+    }
+    if (error) setError(null);
   };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Create a preview URL for the selected image
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
       setFormData({ ...formData, profilePic: file });
     }
   };
 
-  // Clean up object URL when component unmounts or when a new image is selected
   useEffect(() => {
     return () => {
       if (imagePreview) {
@@ -65,45 +69,66 @@ const NewProf = ({ onClose }) => {
     navigate("/Planning");
   };
 
-  const nextStep = () => step < 3 && setStep(step + 1);
-  const prevStep = () => step > 1 && setStep(step - 1);
+  // Validate fields for a given step
+  const validateStep = (currentStep) => {
+    const errors = {};
+    if (currentStep === 1) {
+      if (!formData.nom.trim()) errors.nom = "Le nom est obligatoire";
+      if (!formData.prenom.trim()) errors.prenom = "Le prénom est obligatoire";
+      if (!formData.naissance) errors.naissance = "La date de naissance est obligatoire";
+      if (!formData.email.trim()) errors.email = "L'email est obligatoire";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = "Format d'email invalide";
+      if (!formData.telephone.trim()) errors.telephone = "Le numéro de téléphone est obligatoire";
+    } else if (currentStep === 2) {
+      if (!formData.chargeHeure || Number(formData.chargeHeure) <= 0)
+        errors.chargeHeure = "La charge horaire est obligatoire et doit être supérieure à 0";
+    } else if (currentStep === 3) {
+      if (formData.methodePaiement === "CCP" && !formData.numeroCompte.trim())
+        errors.numeroCompte = "Le numéro de compte CCP est obligatoire";
+      if (formData.methodePaiement === "Bancaire" && !formData.codeBancaire.trim())
+        errors.codeBancaire = "Le code bancaire est obligatoire";
+    }
+    return errors;
+  };
+
+  const nextStep = () => {
+    const errors = validateStep(step);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+    setFieldErrors({});
+    setError(null);
+    step < 3 && setStep(step + 1);
+  };
+
+  const prevStep = () => {
+    setFieldErrors({});
+    setError(null);
+    step > 1 && setStep(step - 1);
+  };
 
   const handleSubmit = async () => {
+    // Validate step 3 before submitting
+    const errors = validateStep(3);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+
     setLoading(true);
     setError(null);
+    setFieldErrors({});
 
     try {
-      // Validate required fields
-      if (
-        !formData.nom ||
-        !formData.prenom ||
-        !formData.email ||
-        !formData.naissance ||
-        !formData.telephone
-      ) {
-        throw new Error("Veuillez remplir tous les champs obligatoires");
-      }
-
-      // Format the date correctly - ensure it's in ISO format
       const formattedDate = formData.naissance
         ? new Date(formData.naissance).toISOString()
         : null;
 
-      if (!formattedDate) {
-        throw new Error("Date de naissance est requise");
-      }
-
-      // Map gender from UI to backend format
       const genre = formData.sexe === "Male" ? "Male" : "Female";
-
-      // Map account type from UI to backend format
-      const typeCompte =
-        formData.methodePaiement === "CCP" ? "Postal" : "Bancaire";
-
-      // Determine if teacher is vacataire based on affiliation
+      const typeCompte = formData.methodePaiement === "CCP" ? "Postal" : "Bancaire";
       const vacataire = formData.enseignantResponsable;
 
-      // Map matiere to enum value
       let matiere;
       switch (formData.matiere.toLowerCase()) {
         case "réseaux":
@@ -121,7 +146,7 @@ const NewProf = ({ onClose }) => {
           matiere = "Systeme";
           break;
         default:
-          matiere = "Resaux"; // Default value
+          matiere = "Resaux";
       }
 
       // Fetch or create a PeriodeTravail
@@ -132,7 +157,7 @@ const NewProf = ({ onClose }) => {
           periodeTravailId = periodResponse.data.id;
         } else {
           const now = new Date();
-          const endDate = new Date(now.getFullYear(), 11, 31); // Default to Dec 31
+          const endDate = new Date(now.getFullYear(), 11, 31);
           const newPeriod = await api.post("/periode-travail", {
             dateDebut: now.toISOString(),
             dateFin: endDate.toISOString(),
@@ -141,10 +166,9 @@ const NewProf = ({ onClose }) => {
         }
       } catch (periodError) {
         console.error("Error fetching/creating period:", periodError);
-        periodeTravailId = 1; // Fallback with a valid ID from your DB
+        periodeTravailId = 1;
       }
 
-      // Create the teacher data object
       const teacherData = {
         prenom: formData.prenom,
         nom: formData.nom,
@@ -192,11 +216,9 @@ const NewProf = ({ onClose }) => {
 
       console.log("Sending teacher data to API:", teacherData);
 
-      // Create the teacher
       const response = await api.post("/teachers/", teacherData);
       console.log("Teacher created successfully:", response.data);
 
-      // Move to success screen
       setStep(4);
     } catch (error) {
       console.error("Error creating teacher:", error);
@@ -206,6 +228,7 @@ const NewProf = ({ onClose }) => {
         errorMessage =
           error.response.data.erreur ||
           error.response.data.error ||
+          error.response.data.message ||
           errorMessage;
         console.error("Server response:", error.response.data);
       } else if (error.message) {
@@ -223,7 +246,6 @@ const NewProf = ({ onClose }) => {
     navigate("/prof");
   };
 
-  // Function to get the appropriate image for preview
   const getPreviewImage = () => {
     if (imagePreview) {
       return imagePreview;
@@ -265,250 +287,269 @@ const NewProf = ({ onClose }) => {
             </div>
 
             {error && (
-              <div
-                className="error-message"
-                style={{ color: "red", margin: "10px 0", textAlign: "center" }}
-              >
+              <div className="error-banner">
+                <span className="error-icon">⚠</span>
                 {error}
               </div>
             )}
 
-            {step === 1 && (
-              <div className="form-step">
-                <div className="name-section">
-                  <div className="name-fields">
-                    <div className="form-group">
-                      <label>Nom</label>
-                      <input
-                        type="text"
-                        name="nom"
-                        value={formData.nom}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Prénom</label>
-                      <input
-                        type="text"
-                        name="prenom"
-                        value={formData.prenom}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <label className="file-upload-container">
-                    <div className="file-upload-content">
-                      {imagePreview || formData.sexe ? (
-                        <img
-                          src={getPreviewImage() || "/placeholder.svg"}
-                          alt="Preview"
-                          className="image-preview"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "/placeholder.svg";
-                          }}
+            <div className="form-step-scrollable">
+              {step === 1 && (
+                <div className="form-step">
+                  <div className="name-section">
+                    <div className="name-fields">
+                      <div className={`form-group ${fieldErrors.nom ? "has-error" : ""}`}>
+                        <label>Nom <span className="required">*</span></label>
+                        <input
+                          type="text"
+                          name="nom"
+                          value={formData.nom}
+                          onChange={handleChange}
+                          placeholder="Ex: Boussaid"
                         />
-                      ) : (
-                        <>
-                          <span className="upload-icon">+</span>
-                          <span>Drop image here</span>
-                        </>
-                      )}
+                        {fieldErrors.nom && <span className="field-error">{fieldErrors.nom}</span>}
+                      </div>
+                      <div className={`form-group ${fieldErrors.prenom ? "has-error" : ""}`}>
+                        <label>Prénom <span className="required">*</span></label>
+                        <input
+                          type="text"
+                          name="prenom"
+                          value={formData.prenom}
+                          onChange={handleChange}
+                          placeholder="Ex: Mohamed"
+                        />
+                        {fieldErrors.prenom && <span className="field-error">{fieldErrors.prenom}</span>}
+                      </div>
                     </div>
-                    <input
-                      type="file"
-                      onChange={handleFileUpload}
-                      accept="image/*"
-                      className="file-input-hidden"
-                    />
-                  </label>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group half-width">
-                    <label>Naissance</label>
-                    <input
-                      type="date"
-                      name="naissance"
-                      value={formData.naissance}
-                      onChange={handleChange}
-                      required
-                    />
+                    <label className="file-upload-container">
+                      <div className="file-upload-content">
+                        {imagePreview || formData.sexe ? (
+                          <img
+                            src={getPreviewImage() || "/placeholder.svg"}
+                            alt="Preview"
+                            className="image-preview"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "/placeholder.svg";
+                            }}
+                          />
+                        ) : (
+                          <>
+                            <span className="upload-icon">+</span>
+                            <span>Drop image here</span>
+                          </>
+                        )}
+                      </div>
+                      <input
+                        type="file"
+                        onChange={handleFileUpload}
+                        accept="image/*"
+                        className="file-input-hidden"
+                      />
+                    </label>
                   </div>
-                  <div className="form-group half-width">
-                    <label>Sexe</label>
-                    <select
-                      name="sexe"
-                      value={formData.sexe}
+
+                  <div className="form-row">
+                    <div className={`form-group half-width ${fieldErrors.naissance ? "has-error" : ""}`}>
+                      <label>Naissance <span className="required">*</span></label>
+                      <input
+                        type="date"
+                        name="naissance"
+                        value={formData.naissance}
+                        onChange={handleChange}
+                      />
+                      {fieldErrors.naissance && <span className="field-error">{fieldErrors.naissance}</span>}
+                    </div>
+                    <div className="form-group half-width">
+                      <label>Sexe</label>
+                      <select
+                        name="sexe"
+                        value={formData.sexe}
+                        onChange={handleChange}
+                      >
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className={`form-group ${fieldErrors.email ? "has-error" : ""}`}>
+                    <label>Email <span className="required">*</span></label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
                       onChange={handleChange}
-                      required
+                      placeholder="Ex: m.boussaid@esi.dz"
+                    />
+                    {fieldErrors.email && <span className="field-error">{fieldErrors.email}</span>}
+                  </div>
+
+                  <div className={`form-group ${fieldErrors.telephone ? "has-error" : ""}`}>
+                    <label>Numéro de tél <span className="required">*</span></label>
+                    <input
+                      type="tel"
+                      name="telephone"
+                      value={formData.telephone}
+                      onChange={handleChange}
+                      placeholder="Ex: 0555123456"
+                    />
+                    {fieldErrors.telephone && <span className="field-error">{fieldErrors.telephone}</span>}
+                  </div>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="form-step">
+                  <div className="form-group">
+                    <label>Grade <span className="required">*</span></label>
+                    <select
+                      name="grade"
+                      value={formData.grade}
+                      onChange={handleChange}
                     >
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
+                      <option value="2">Maître de conférence A (MCA)</option>
+                      <option value="3">Maître de conférence B (MCB)</option>
+                      <option value="1">Professeur (PROF)</option>
                     </select>
                   </div>
-                </div>
 
-                <div className="form-group">
-                  <label>Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Numéro de tél</label>
-                  <input
-                    type="tel"
-                    name="telephone"
-                    value={formData.telephone}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-            )}
-
-            {step === 2 && (
-              <div className="form-step">
-                <div className="form-group">
-                  <label>Grade</label>
-                  <select
-                    name="grade"
-                    value={formData.grade}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="2">Maître de conférence A (MCA)</option>
-                    <option value="3">Maître de conférence B (MCB)</option>
-                    <option value="1">Professeur (PROF)</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="section-label">Affiliation</label>
-                  <div className="radio-option-group">
-                    <label className="radio-option">
-                      <input
-                        type="radio"
-                        name="affiliation"
-                        value="De récole"
-                        checked={formData.affiliation === "De récole"}
-                        onChange={handleChange}
-                      />
-                      <span className="radio-custom"></span>
-                      <span className="radio-label">De l'école</span>
-                    </label>
-                    <label className="radio-option">
-                      <input
-                        type="radio"
-                        name="affiliation"
-                        value="Hors récole"
-                        checked={formData.affiliation === "Hors récole"}
-                        onChange={handleChange}
-                      />
-                      <span className="radio-custom"></span>
-                      <span className="radio-label">Hors l'école</span>
-                    </label>
+                  <div className="form-group">
+                    <label className="section-label">Affiliation</label>
+                    <div className="radio-option-group">
+                      <label className="radio-option">
+                        <input
+                          type="radio"
+                          name="affiliation"
+                          value="De récole"
+                          checked={formData.affiliation === "De récole"}
+                          onChange={handleChange}
+                        />
+                        <span className="radio-custom"></span>
+                        <span className="radio-label">De l'école</span>
+                      </label>
+                      <label className="radio-option">
+                        <input
+                          type="radio"
+                          name="affiliation"
+                          value="Hors récole"
+                          checked={formData.affiliation === "Hors récole"}
+                          onChange={handleChange}
+                        />
+                        <span className="radio-custom"></span>
+                        <span className="radio-label">Hors l'école</span>
+                      </label>
+                    </div>
                   </div>
-                </div>
 
-                <div className="form-group">
-                  <label>Charge d'heure</label>
-                  <input
-                    type="number"
-                    name="chargeHeure"
-                    value={formData.chargeHeure}
-                    onChange={handleChange}
-                    min="0"
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Matière enseignée</label>
-                  <select
-                    name="matiere"
-                    value={formData.matiere}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="Resaux">Réseaux</option>
-                    <option value="Algo">Algorithme</option>
-                    <option value="Systeme">Système</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="checkbox-option">
+                  <div className={`form-group ${fieldErrors.chargeHeure ? "has-error" : ""}`}>
+                    <label>Charge d'heure <span className="required">*</span></label>
                     <input
-                      type="checkbox"
-                      name="enseignantResponsable"
-                      checked={formData.enseignantResponsable}
+                      type="number"
+                      name="chargeHeure"
+                      value={formData.chargeHeure}
                       onChange={handleChange}
+                      min="0"
+                      placeholder="Ex: 192"
                     />
-                    <span className="checkbox-custom"></span>
-                    <span className="checkbox-label">
-                      Vacataire
-                    </span>
-                  </label>
-                </div>
-              </div>
-            )}
+                    {fieldErrors.chargeHeure && <span className="field-error">{fieldErrors.chargeHeure}</span>}
+                  </div>
 
-            {step === 3 && (
-              <div className="form-step">
-                <div className="form-group">
-                  <label className="section-label">Méthode</label>
-                  <div className="radio-option-group">
-                    <label className="radio-option">
+                  <div className="form-group">
+                    <label>Matière enseignée <span className="required">*</span></label>
+                    <select
+                      name="matiere"
+                      value={formData.matiere}
+                      onChange={handleChange}
+                    >
+                      <option value="Resaux">Réseaux</option>
+                      <option value="Algo">Algorithme</option>
+                      <option value="Systeme">Système</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="checkbox-option">
                       <input
-                        type="radio"
-                        name="methodePaiement"
-                        value="CCP"
-                        checked={formData.methodePaiement === "CCP"}
+                        type="checkbox"
+                        name="enseignantResponsable"
+                        checked={formData.enseignantResponsable}
                         onChange={handleChange}
                       />
-                      <span className="radio-custom"></span>
-                      <span className="radio-label">Compte CCP</span>
-                    </label>
-                    <label className="radio-option">
-                      <input
-                        type="radio"
-                        name="methodePaiement"
-                        value="Bancaire"
-                        checked={formData.methodePaiement === "Bancaire"}
-                        onChange={handleChange}
-                      />
-                      <span className="radio-custom"></span>
-                      <span className="radio-label">Compte Bancaire</span>
+                      <span className="checkbox-custom"></span>
+                      <span className="checkbox-label">
+                        Vacataire
+                      </span>
                     </label>
                   </div>
                 </div>
+              )}
 
-                <div className="form-group">
-                  <label>N° de compte</label>
-                  <input
-                    type="text"
-                    name="numeroCompte"
-                    value={formData.numeroCompte}
-                    onChange={handleChange}
-                    disabled={formData.methodePaiement !== "CCP"}
-                  />
+              {step === 3 && (
+                <div className="form-step">
+                  <div className="form-group">
+                    <label className="section-label">Méthode <span className="required">*</span></label>
+                    <div className="radio-option-group">
+                      <label className="radio-option">
+                        <input
+                          type="radio"
+                          name="methodePaiement"
+                          value="CCP"
+                          checked={formData.methodePaiement === "CCP"}
+                          onChange={handleChange}
+                        />
+                        <span className="radio-custom"></span>
+                        <span className="radio-label">Compte CCP</span>
+                      </label>
+                      <label className="radio-option">
+                        <input
+                          type="radio"
+                          name="methodePaiement"
+                          value="Bancaire"
+                          checked={formData.methodePaiement === "Bancaire"}
+                          onChange={handleChange}
+                        />
+                        <span className="radio-custom"></span>
+                        <span className="radio-label">Compte Bancaire</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {formData.methodePaiement === "CCP" && (
+                    <div className={`form-group ${fieldErrors.numeroCompte ? "has-error" : ""}`}>
+                      <label>N° de compte CCP <span className="required">*</span></label>
+                      <input
+                        type="text"
+                        name="numeroCompte"
+                        value={formData.numeroCompte}
+                        onChange={handleChange}
+                        placeholder="Ex: 123456789"
+                      />
+                      {fieldErrors.numeroCompte && <span className="field-error">{fieldErrors.numeroCompte}</span>}
+                    </div>
+                  )}
+
+                  {formData.methodePaiement === "Bancaire" && (
+                    <div className={`form-group ${fieldErrors.codeBancaire ? "has-error" : ""}`}>
+                      <label>Code bancaire <span className="required">*</span></label>
+                      <input
+                        type="text"
+                        name="codeBancaire"
+                        value={formData.codeBancaire}
+                        onChange={handleChange}
+                        placeholder="Ex: 987654321"
+                      />
+                      {fieldErrors.codeBancaire && <span className="field-error">{fieldErrors.codeBancaire}</span>}
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="form-actions">
               {step > 1 && (
